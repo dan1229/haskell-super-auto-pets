@@ -2,52 +2,33 @@ module Main where
 
 
 
--- Types for animal states
--- Attack
--- Defense (lowers incoming attack)
--- Health
--- Cost?
-{- example of 'smart constructor' from book
-type Name = String
-type Age = Integer
-
-data Person = Person Name Age deriving Show
-
-mkPerson :: Name -> Age -> Maybe Person
-mkPerson name age
-  | name /= "" && age >= 0 = Just $ Person name age
-  | otherwise = Nothing
--}
+-- Types for pet
+newType Name = String
 newtype Attack = Int
-newtype Defense = Int
+newtype Defense = Int  -- how does defense work? should we subtract it from attack? should this be a more complex type?
+newtype Health = Int
+newtype Cost = Int
+
+data Pet = Pet Name Attack Defense Health Cost deriving Show
+
+mkPet :: Name -> Attack -> Defense -> Health -> Cost -> Maybe Pet
+mkPet name attack defense health cost
+-- TODO add error messages for specific issues
+    | name /= "" && attack > 0 && defense > 0 && health > 0 = Just $ Pet name attack defense health cost
+    | otherwise = Nothing
 
 
--- Types for animals
--- dog, cat, ant, pig, alligator, duck beaver
 
 
 
-
-
--- Types for 'user' states - best way to have these as 'globals'?
+-- Types for 'user' states
+    -- best way to have these as a global state?
 -- overall health
 -- money
 
 
 
 -- MAIN
-
-
-
-fibs :: [Integer]
-fibs = fmap fib [1, 2 ..] 
-
-
-fib :: Integer -> Integer
-fib 1 = 1
-fib 2 = 1
-fib n = fib (n - 1) + fib (n - 2)
-
-
 main = do
   putStrLn "MAIN"
+  -- TODO create pet instances, how to store them globally?
