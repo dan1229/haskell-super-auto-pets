@@ -17,6 +17,7 @@ mkPet name attack defense health cost
     | name /= "" && attack > 0 && defense > 0 && health > 0 = Just $ Pet name attack defense health cost
     | otherwise = Nothing
 
+-- TODO add some kind of semigroup/monoid for combining animals when you drag them ontop of one another
 
 
 
@@ -24,7 +25,8 @@ mkPet name attack defense health cost
 -- Types for 'user' states
     -- best way to have these as a global state?
 -- overall health
--- money
+-- money - dont need, just get 10 every round
+-- round - current round number only maybe
 
 
 
