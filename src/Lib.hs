@@ -7,7 +7,7 @@ module Lib where
 
 startRound :: Int -> IO ()
 startRound round =
-    putStrLn $ "Starting round..." ++ show round
+    putStrLn $ "Starting round... " ++ show round
 
 --
 -- PETS
