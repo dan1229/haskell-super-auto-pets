@@ -1,6 +1,15 @@
 module Lib where
 
 --
+-- ROUNDS
+--
+
+
+startRound :: Int -> IO ()
+startRound round =
+    putStrLn $ "Starting round..." ++ show round
+
+--
 -- PETS
 --
 
@@ -36,5 +45,6 @@ f _ = Nothing
 -- overall health
 -- money - dont need, just get 10 every round
 -- round - current round number only maybe
+
 
 
