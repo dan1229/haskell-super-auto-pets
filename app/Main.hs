@@ -9,10 +9,12 @@ gameMenu round = do
     putStrLn "2. No (exit)"
     input1 <- getLine 
     let choice = (read input1 :: Int)  -- how to make this safe? i.e., 'a' doesnt work
+    -- GOOSE
     -- try/catch in haskell https://stackoverflow.com/questions/6009384/exception-handling-in-haskell
     if choice == 1
         then do
             startRound round
+            -- GOOSE - how to deal with recursion/while loop
             gameMenu (round + 1)
     else putStrLn "Thanks for playing!"
             
