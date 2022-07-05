@@ -2,5 +2,9 @@ module Main where
 
 import Lib
 
-main :: IO ()
-main = someFunc
+--
+-- MAIN
+--
+main = do
+  putStrLn "MAIN"
+  -- TODO main game loop
