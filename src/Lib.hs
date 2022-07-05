@@ -34,7 +34,9 @@ mkPet name attack defense health cost
 
 
 -- global list of pets
-numPets = 6
+numPets :: () -> Int
+numPets _ = 6
+
 getPet :: Int -> Maybe Pet
 getPet 0 = mkPet "Ralph" 5 10 20 5  -- TODO how to require the types? i.e., "Attack 5"
 getPet 1 = mkPet "Teddy" 10 5 20 5

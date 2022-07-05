@@ -1,7 +1,0 @@
-# TODO
-
-
-tests?
-
-
-get functional...?
