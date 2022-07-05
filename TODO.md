@@ -1,10 +1,7 @@
 # TODO
 
 
-make cabal project
+tests?
 
 
 get functional...?
-
-
-tests
