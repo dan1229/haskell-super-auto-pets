@@ -1,11 +1,15 @@
 module Lib where
 
+import System.Random
+
 --
 -- ROUNDS
 --
 startRound :: Int -> IO ()
 startRound round = do
     putStrLn $ "Starting round... " ++ show round
+    let indPet = randomRIO (1, numPets)
+    putStrLn $ "Pet... " ++ show indPet
     -- TODO choose pets, deal with gold, etc.
 
 
