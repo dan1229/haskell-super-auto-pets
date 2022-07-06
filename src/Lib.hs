@@ -5,30 +5,45 @@ import Data.Maybe (fromJust)
 
 
 --
--- ROUNDS
+-- GAME FLOW
 --
 startRound :: User -> Int -> IO ()
 startRound user round = do
     putStrLn $ "\nRound " ++ show round ++ " starting..."
+    startPetSelection user
+    startBattle user
 
-    selectPets user
-    -- TODO BATTLE
 
-
-selectPets :: User -> IO ()
-selectPets user = do
+startPetSelection :: User -> IO ()
+startPetSelection user = do
     let goldTotal = 10
     let goldRemaining = goldTotal
 
+    -- list out 3 random choices
     pet1 <- getPet allPets
     pet2 <- getPet allPets
     pet3 <- getPet allPets
-    putStrLn $ "1. " ++ show (fromJust pet1) -- is fromJust bad?
-    putStrLn $ "2. " ++ show (fromJust pet2)
-    putStrLn $ "3. " ++ show (fromJust pet3)
+    let petChoices = [fromJust pet1, fromJust pet2, fromJust pet3]
+    putStrLn $ "1. " ++ show (petChoices !! 0) -- is fromJust bad?
+    putStrLn $ "2. " ++ show (petChoices !! 1)
+    putStrLn $ "3. " ++ show (petChoices !! 2)
 
     -- TODO deal with pet selection, gold, etc.
     putStrLn $ "\nYou have " ++ show goldRemaining ++ " gold remaining."
+    putStrLn $ "Select pet: "
+    inputPet <- getLine 
+    let choice = (read inputPet :: Int)
+    putStrLn $ show $ petChoices !! (choice - 1) -- TODO check input
+
+
+startBattle :: User -> IO ()
+startBattle user = do
+    putStrLn "\n==========="
+    putStrLn $ show (userRoster user)
+    putStrLn "\nBATTLE"
+    putStrLn "BATTLE"
+    putStrLn "BATTLE"
+    -- TODO BATTLE
 
 
 --
@@ -99,6 +114,7 @@ getPet xs = do
 data User = User
   { userName :: String
   , userRoster :: Roster
+  -- TODO health?
   }
 
 data Roster = Roster
@@ -108,7 +124,7 @@ data Roster = Roster
   , rosterPet4 :: Maybe Pet
   , rosterPet5 :: Maybe Pet
   , rosterPet6 :: Maybe Pet
-  }
+  } deriving Show
 
 
 rosterEmpty :: Roster
@@ -120,10 +136,3 @@ rosterEmpty = Roster
   , rosterPet5 = Nothing
   , rosterPet6 = Nothing
   }
-
-
--- Types for 'user' states
-    -- best way to have these as a global state?
--- overall health
--- money - dont need, just get 10 every round
--- round - current round number only maybe
