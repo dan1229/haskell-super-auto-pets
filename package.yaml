@@ -19,8 +19,13 @@ extra-source-files:
 # common to point users to the README.md file.
 description:         Please see the README on GitHub at <https://github.com/dan1229/haskell-super-auto-pets#readme>
 
+default-extensions:
+- OverloadedStrings
+- GeneralizedNewtypeDeriving
+
 dependencies:
 - base >= 4.7 && < 5
+- random
 
 library:
   source-dirs: src
