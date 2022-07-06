@@ -11,6 +11,15 @@ startRound :: User -> Int -> IO ()
 startRound user round = do
     putStrLn $ "\nRound " ++ show round ++ " starting..."
 
+    selectPets user
+    -- TODO BATTLE
+
+
+selectPets :: User -> IO ()
+selectPets user = do
+    let goldTotal = 10
+    let goldRemaining = goldTotal
+
     pet1 <- getPet allPets
     pet2 <- getPet allPets
     pet3 <- getPet allPets
@@ -19,10 +28,7 @@ startRound user round = do
     putStrLn $ "3. " ++ show (fromJust pet3)
 
     -- TODO deal with pet selection, gold, etc.
-    putStrLn $ "\nYou have "
-
-    -- TODO BATTLE
-
+    putStrLn $ "\nYou have " ++ show goldRemaining ++ " gold remaining."
 
 
 --
