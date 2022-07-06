@@ -9,19 +9,19 @@ import Data.Maybe (fromJust)
 --
 startRound :: User -> Int -> IO ()
 startRound user round = do
-    putStrLn $ "\nRound " ++ show round ++ " starting..."
+    putStrLn $ "Round " ++ show round ++ " starting..."
     startPetSelection user (Cost 15)
 
 
 startPetSelection :: User -> Cost -> IO ()
 startPetSelection user goldRemaining = do
     -- list out 3 random choices
-    putStrLn $ "\n"
+    putStrBar
     pet1 <- getPet allPets
     pet2 <- getPet allPets
     pet3 <- getPet allPets
     let petChoices = [fromJust pet1, fromJust pet2, fromJust pet3]
-    putStrLn $ "1. " ++ show (petChoices !! 0) -- is fromJust bad?
+    putStrLn $ "1. " ++ show (petChoices !! 0) -- is fromJust bad? GOOSE
     putStrLn $ "2. " ++ show (petChoices !! 1)
     putStrLn $ "3. " ++ show (petChoices !! 2)
 
@@ -31,7 +31,7 @@ startPetSelection user goldRemaining = do
     inputPet <- getLine 
     let choice = (read inputPet :: Int)
     let pet = petChoices !! (choice - 1) 
-    putStrLn $ show pet -- TODO check input GOOSE
+    putStrLn $ "\nYou've selected: " ++ show pet -- TODO check input GOOSE
 
     let tmp = goldRemaining - (petCost pet)
     -- TODO how to add pet to userRoster?
@@ -44,12 +44,17 @@ startPetSelection user goldRemaining = do
 
 startBattle :: User -> IO ()
 startBattle user = do
-    putStrLn "\n==========="
+    putStrBar
     putStrLn $ show (userRoster user)
     putStrLn "\nBATTLE"
     putStrLn "BATTLE"
     putStrLn "BATTLE"
     -- TODO BATTLE
+
+
+putStrBar :: IO ()
+putStrBar = do
+    putStrLn "\n==================="
 
 
 --
