@@ -78,14 +78,15 @@ instance Attribute Cost where
 -- PETS
 --
 data Pet = Pet Name Attack Defense Health Cost
--- data AnimalType = Turtle | Ant | Penguin | etc... -- TODO how to do this? is this the best way to do this? is this necessary?
+-- TODO how to do this? is this the best way to do this? is this necessary?
+-- data AnimalType = Turtle | Ant | Penguin | etc...
+
 
 instance Show Pet where
   show (Pet name attack defense health cost) = (getName name) ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", D: " ++ show (getDefense defense) ++ ", H: " ++ show (getHealth health) ++ ")"
 
 mkPet :: Name -> Attack -> Defense -> Health -> Cost -> Maybe Pet
 mkPet name attack defense health cost
-    -- TODO add error messages for specific issues
     | valid name && valid attack && valid defense && valid health && valid cost = Just $ Pet name attack defense health cost
     | otherwise = Nothing
 
@@ -93,12 +94,15 @@ mkPet name attack defense health cost
 -- global list of pets
 allPets :: [Maybe Pet]
 allPets =
-  [ mkPet "Ralph" (Attack 5) (Defense 10) (Health 20) (Cost 5)
-  , mkPet "Teddy" (Attack 10) (Defense 5) (Health 20) (Cost 5)
+  [ mkPet "Ralfy" (Attack 10) (Defense 20) (Health 30) (Cost 5)
+  , mkPet "Teddy" (Attack 10) (Defense 5) (Health 35) (Cost 5)
   , mkPet "Fredd" (Attack 7) (Defense 8) (Health 20) (Cost 5)
   , mkPet "Neddd" (Attack 30) (Defense 30) (Health 5) (Cost 5)
   , mkPet "Edddy" (Attack 10) (Defense 10) (Health 100) (Cost 5)
-  , mkPet "Kedly" (Attack 20) (Defense 5) (Health 25) (Cost 5)
+  , mkPet "Kevly" (Attack 20) (Defense 20) (Health 25) (Cost 5)
+  , mkPet "Renly" (Attack 10) (Defense 15) (Health 15) (Cost 5)
+  , mkPet "Fedly" (Attack 3) (Defense 25) (Health 30) (Cost 5)
+  , mkPet "Pengy" (Attack 90) (Defense 90) (Health 90) (Cost 5)
   ]
 
 
