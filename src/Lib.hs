@@ -1,6 +1,7 @@
 module Lib where
 import System.Random
 import Data.String (IsString)
+import Data.Maybe (fromJust)
 
 
 --
@@ -9,8 +10,14 @@ import Data.String (IsString)
 startRound :: Int -> IO ()
 startRound round = do
     putStrLn $ "Round " ++ show round ++ " starting..."
-    pet <- getPet allPets
-    print pet
+
+    pet1 <- getPet allPets
+    pet2 <- getPet allPets
+    pet3 <- getPet allPets
+    putStrLn $ "1. " ++ show (fromJust pet1) -- is fromJust bad?
+    putStrLn $ "2. " ++ show (fromJust pet2)
+    putStrLn $ "3. " ++ show (fromJust pet3)
+
     -- TODO select three pets to present randomly
     -- indPet1 <- randomIO numPets
     -- let indPet2 = rng numPets
@@ -53,8 +60,8 @@ instance Attribute Cost where
 --
 -- PETS
 --
--- data AnimalType = Turtle | Ant | Penguin | etc... -- TODO how to do this? is this the best way to do this? is this necessary?
 data Pet = Pet Name Attack Defense Health Cost deriving Show
+-- data AnimalType = Turtle | Ant | Penguin | etc... -- TODO how to do this? is this the best way to do this? is this necessary?
 
 mkPet :: Name -> Attack -> Defense -> Health -> Cost -> Maybe Pet
 mkPet name attack defense health cost
@@ -80,16 +87,6 @@ getPet xs = do
   idx <- randomRIO (0, length xs - 1)
   pure $ xs !! idx
 
--- TODO add some kind of semigroup/monoid for combining animals when you drag them ontop of one another
--- GOOSE
-
-
-
--- Types for 'user' states
-    -- best way to have these as a global state?
--- overall health
--- money - dont need, just get 10 every round
--- round - current round number only maybe
 
 --
 -- USER
@@ -107,3 +104,11 @@ data Roster = Roster
   , rosterPet5 :: Maybe Pet
   , rosterPet6 :: Maybe Pet
   }
+
+
+
+-- Types for 'user' states
+    -- best way to have these as a global state?
+-- overall health
+-- money - dont need, just get 10 every round
+-- round - current round number only maybe
