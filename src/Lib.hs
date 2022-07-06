@@ -10,12 +10,11 @@ import Data.Maybe (fromJust)
 startRound :: User -> Int -> IO ()
 startRound user round = do
     putStrLn $ "\nRound " ++ show round ++ " starting..."
-    startPetSelection user 15  -- this should be a Cost
+    startPetSelection user (Cost 15)
 
 
-startPetSelection :: User -> Int -> IO ()
+startPetSelection :: User -> Cost -> IO ()
 startPetSelection user goldRemaining = do
-
     -- list out 3 random choices
     putStrLn $ "\n"
     pet1 <- getPet allPets
@@ -27,16 +26,17 @@ startPetSelection user goldRemaining = do
     putStrLn $ "3. " ++ show (petChoices !! 2)
 
     -- deal with pet selection and gold
-    putStrLn $ "\nYou have " ++ show goldRemaining ++ " gold remaining."
+    putStrLn $ "\nYou have $" ++ show goldRemaining ++ " gold remaining."
     putStrLn $ "Select pet: "
     inputPet <- getLine 
     let choice = (read inputPet :: Int)
     let pet = petChoices !! (choice - 1) 
-    putStrLn $ show pet -- TODO check input
+    putStrLn $ show pet -- TODO check input GOOSE
 
-    let tmp = goldRemaining - getCost (petCost pet)
+    let tmp = goldRemaining - (petCost pet)
     -- TODO how to add pet to userRoster?
-    if tmp > 0
+    -- GOOSE
+    if tmp > (Cost 0)
         then startPetSelection user tmp
     else startBattle user
 
@@ -59,7 +59,7 @@ newtype Name = Name {getName::String} deriving (Show, IsString)
 newtype Attack = Attack {getAttack::Int} deriving Show
 newtype Defense = Defense {getDefense::Int} deriving Show  -- how does defense work? should we subtract it from attack? should this be a more complex type?
 newtype Health = Health {getHealth::Int} deriving Show
-newtype Cost = Cost {getCost::Int} deriving Show
+newtype Cost = Cost {getCost::Int} deriving (Num, Ord, Eq)
 
 class Attribute a where
     valid :: a -> Bool
@@ -78,6 +78,9 @@ instance Attribute Health where
 
 instance Attribute Cost where
     valid (Cost x) = x >= 0
+
+instance Show Cost where
+    show (Cost x) = show x
 
 
 --
