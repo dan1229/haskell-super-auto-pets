@@ -60,8 +60,11 @@ instance Attribute Cost where
 --
 -- PETS
 --
-data Pet = Pet Name Attack Defense Health Cost deriving Show
+data Pet = Pet Name Attack Defense Health Cost
 -- data AnimalType = Turtle | Ant | Penguin | etc... -- TODO how to do this? is this the best way to do this? is this necessary?
+
+instance Show Pet where
+  show (Pet name attack defense health cost) = (getName name) ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", D: " ++ show (getDefense defense) ++ ", H: " ++ show (getHealth health) ++ ")"
 
 mkPet :: Name -> Attack -> Defense -> Health -> Cost -> Maybe Pet
 mkPet name attack defense health cost
