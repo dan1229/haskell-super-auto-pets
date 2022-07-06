@@ -10,16 +10,14 @@ import Data.Maybe (fromJust)
 startRound :: User -> Int -> IO ()
 startRound user round = do
     putStrLn $ "\nRound " ++ show round ++ " starting..."
-    startPetSelection user
-    startBattle user
+    startPetSelection user 15  -- this should be a Cost
 
 
-startPetSelection :: User -> IO ()
-startPetSelection user = do
-    let goldTotal = 10
-    let goldRemaining = goldTotal
+startPetSelection :: User -> Int -> IO ()
+startPetSelection user goldRemaining = do
 
     -- list out 3 random choices
+    putStrLn $ "\n"
     pet1 <- getPet allPets
     pet2 <- getPet allPets
     pet3 <- getPet allPets
@@ -28,12 +26,20 @@ startPetSelection user = do
     putStrLn $ "2. " ++ show (petChoices !! 1)
     putStrLn $ "3. " ++ show (petChoices !! 2)
 
-    -- TODO deal with pet selection, gold, etc.
+    -- deal with pet selection and gold
     putStrLn $ "\nYou have " ++ show goldRemaining ++ " gold remaining."
     putStrLn $ "Select pet: "
     inputPet <- getLine 
     let choice = (read inputPet :: Int)
-    putStrLn $ show $ petChoices !! (choice - 1) -- TODO check input
+    let pet = petChoices !! (choice - 1) 
+    putStrLn $ show pet -- TODO check input
+
+    let tmp = goldRemaining - getCost (petCost pet)
+    -- TODO how to add pet to userRoster?
+    if tmp > 0
+        then startPetSelection user tmp
+    else startBattle user
+
 
 
 startBattle :: User -> IO ()
@@ -77,7 +83,13 @@ instance Attribute Cost where
 --
 -- PETS
 --
-data Pet = Pet Name Attack Defense Health Cost
+data Pet = Pet
+  { petName :: Name
+  , petAttack :: Attack
+  , petDefense :: Defense
+  , petHealth :: Health
+  , petCost :: Cost
+  }
 -- TODO how to do this? is this the best way to do this? is this necessary?
 -- data AnimalType = Turtle | Ant | Penguin | etc...
 
