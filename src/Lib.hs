@@ -7,9 +7,9 @@ import Data.Maybe (fromJust)
 --
 -- ROUNDS
 --
-startRound :: Int -> IO ()
-startRound round = do
-    putStrLn $ "Round " ++ show round ++ " starting..."
+startRound :: User -> Int -> IO ()
+startRound user round = do
+    putStrLn $ "\nRound " ++ show round ++ " starting..."
 
     pet1 <- getPet allPets
     pet2 <- getPet allPets
@@ -18,14 +18,10 @@ startRound round = do
     putStrLn $ "2. " ++ show (fromJust pet2)
     putStrLn $ "3. " ++ show (fromJust pet3)
 
-    -- TODO select three pets to present randomly
-    -- indPet1 <- randomIO numPets
-    -- let indPet2 = rng numPets
-    -- let indPet3 = rng numPets
-    -- let petChoices = [getPet indPet1, getPet indPet2, getPet indPet3]
-    -- putStrLn $ show indPet1 ++ show indPet2 ++ show indPet3
-    -- putStrLn $ "Pets\n" ++ show indPet1
-    -- TODO choose pets, deal with gold, etc.
+    -- TODO deal with pet selection, gold, etc.
+    putStrLn $ "\nYou have "
+
+    -- TODO BATTLE
 
 
 
@@ -108,6 +104,16 @@ data Roster = Roster
   , rosterPet6 :: Maybe Pet
   }
 
+
+rosterEmpty :: Roster
+rosterEmpty = Roster
+  { rosterPet1 = Nothing
+  , rosterPet2 = Nothing
+  , rosterPet3 = Nothing
+  , rosterPet4 = Nothing
+  , rosterPet5 = Nothing
+  , rosterPet6 = Nothing
+  }
 
 
 -- Types for 'user' states
