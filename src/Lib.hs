@@ -4,6 +4,7 @@ import Data.String (IsString)
 
 import System.IO (hFlush, stdout)
 import Text.Read (readMaybe)
+import Data.Maybe (fromJust)
 
 goldInitial :: Cost
 goldInitial = (Cost 15)
@@ -129,6 +130,7 @@ data Pet = Pet
   { petName :: Name
   , petAttack :: Attack
   , petHealth :: Health
+  , petHealthRemaining :: Health
   , petCost :: Cost
   }
 -- TODO how to do this? is this the best way to do this? is this necessary?
@@ -136,10 +138,10 @@ data Pet = Pet
 
 
 instance Show Pet where
-  show (Pet name attack health cost) = (getName name) ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ show (getHealth health) ++ ")"
+  show (Pet name attack health healthRemaining cost) = (getName name) ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ show (getHealth healthRemaining) ++ "/" ++ show (getHealth health) ++ ")"
 
 instance Display Pet where
-  display (Pet name attack health cost) = (getName name) ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ show (getHealth health) ++ ")"
+  display (Pet name attack health healthRemaining cost) = (getName name) ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ show (gethealth healthRemaining) ++ "/" ++ show (getHealth health) ++ ")"
 
 
 -- global list of pets
@@ -172,6 +174,18 @@ insertPet p roster = case roster of
   Roster _ _ _ _ Nothing _ -> roster{ rosterPet5=(Just p) }
   Roster _ _ _ _ _ Nothing -> roster{ rosterPet6=(Just p) }
   _ -> error "OH NO"
+
+
+-- TODO how to make these so they automatically get the first pet available in a roster
+-- getPetRoster :: Int -> Roster -> Pet
+-- getPetRoster ind roster = do
+--   0 -> (rosterPet1 roster)
+--   _ -> error "OH NO"
+
+
+-- getPetRosterFirst :: Roster -> Maybe Pet
+-- getPetRosterFirst roster = getPetRoster 0 roster
+
 
 
 --
