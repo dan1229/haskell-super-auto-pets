@@ -8,7 +8,7 @@ import Data.Maybe (fromJust, isNothing)
 
 
 goldInitial :: Cost
-goldInitial = (Cost 15)
+goldInitial = Cost 15
 
 --
 -- GAME FLOW
