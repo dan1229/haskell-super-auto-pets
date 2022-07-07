@@ -69,8 +69,8 @@ startBattle user = do
 
 rosterBattle :: User -> User -> IO()
 rosterBattle user1 user2 = do
-  let r1pet = getPetRosterFirst (userRoster user1)
-  let r2pet = getPetRosterFirst (userRoster user2)
+  let r1pet = getRosterFirst (userRoster user1)
+  let r2pet = getRosterFirst (userRoster user2)
 
   if isNothing r1pet
     then putStrLn "user1 LOSES"
@@ -88,10 +88,12 @@ rosterBattle user1 user2 = do
 
 
   -- TODO
-  -- get first element in each roster to face off
-  --    IF EITHER IS EMPTY - THE OTHER ROSTER WINS
-  --        May need to pass 'User' instead of 'Roster' for this
+  -- ATTACK
+    -- take turns dealing damage - who goes first?
+
   -- update each pet's health
+    -- see if any are dead i.e., petHealthRemaining <= 0
+
   -- create new rosters and battle again
 
   putStrLn "BATTLE"
@@ -164,18 +166,14 @@ data Pet = Pet
 mkPet :: Name -> Attack -> Health -> Cost -> Pet
 mkPet name attack health cost = Pet name attack health health cost
 
--- TODO how to do this? is this the best way to do this? is this necessary?
--- data AnimalType = Turtle | Ant | Penguin | etc...
 
-
-instance Show Pet where
+instance Show Pet where  -- TODO replace all shows with displays
   show (Pet name attack health healthRemaining cost) = (getName name) ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ "/" ++ show (getHealth health) ++ ")"
 
 instance Display Pet where
   display (Pet name attack health healthRemaining cost) = (getName name) ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ "/" ++ show (getHealth health) ++ ")"
 
 
--- global list of pets
 allPets :: [Pet]
 allPets =
   [ mkPet "Ralfy" (Attack 10) (Health 30) (Cost 5)
@@ -207,15 +205,9 @@ insertPet p roster = case roster of
   _ -> error "OH NO"
 
 
--- TODO how to make these so they automatically get the first pet available in a roster
--- getPetRoster :: Int -> Roster -> Pet
--- getPetRoster ind roster = do
---   0 -> (rosterPet1 roster)
---   _ -> error "OH NO"
 
-
-getPetRosterFirst :: Roster -> Maybe Pet
-getPetRosterFirst roster = case roster of
+getRosterFirst :: Roster -> Maybe Pet
+getRosterFirst roster = case roster of
   Roster p _ _ _ _ _ -> p
   Roster Nothing p _ _ _ _ -> p
   Roster Nothing Nothing p _ _ _ -> p
