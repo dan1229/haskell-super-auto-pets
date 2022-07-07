@@ -62,12 +62,9 @@ putStrBar = do
 --
 newtype Name = Name {getName::String} deriving (Show, IsString)
 newtype Attack = Attack {getAttack::Int} deriving Show
-newtype Defense = Defense {getDefense::Int} deriving Show  -- how does defense work? should we subtract it from attack? should this be a more complex type?
 newtype Health = Health {getHealth::Int} deriving Show
 newtype Cost = Cost {getCost::Int} deriving (Num, Ord, Eq)
 
--- TODO add items list to pet
--- get rid of defense
 
 class Attribute a where
     valid :: a -> Bool
@@ -77,9 +74,6 @@ instance Attribute Name where
 
 instance Attribute Attack where
     valid (Attack x) = x > 0
-
-instance Attribute Defense where
-    valid (Defense x) = x > 0
 
 instance Attribute Health where
     valid (Health x) = x > 0
@@ -97,7 +91,6 @@ instance Show Cost where
 data Pet = Pet
   { petName :: Name
   , petAttack :: Attack
-  , petDefense :: Defense
   , petHealth :: Health
   , petCost :: Cost
   }
@@ -106,26 +99,26 @@ data Pet = Pet
 
 
 instance Show Pet where
-  show (Pet name attack defense health cost) = (getName name) ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", D: " ++ show (getDefense defense) ++ ", H: " ++ show (getHealth health) ++ ")"
+  show (Pet name attack health cost) = (getName name) ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ show (getHealth health) ++ ")"
 
-mkPet :: Name -> Attack -> Defense -> Health -> Cost -> Maybe Pet
-mkPet name attack defense health cost
-    | valid name && valid attack && valid defense && valid health && valid cost = Just $ Pet name attack defense health cost
+mkPet :: Name -> Attack -> Health -> Cost -> Maybe Pet
+mkPet name attack health cost
+    | valid name && valid attack && valid health && valid cost = Just $ Pet name attack health cost
     | otherwise = Nothing
 
 
 -- global list of pets
 allPets :: [Maybe Pet]
 allPets =
-  [ mkPet "Ralfy" (Attack 10) (Defense 20) (Health 30) (Cost 5)
-  , mkPet "Teddy" (Attack 10) (Defense 5) (Health 35) (Cost 5)
-  , mkPet "Fredd" (Attack 7) (Defense 8) (Health 20) (Cost 5)
-  , mkPet "Neddd" (Attack 30) (Defense 30) (Health 5) (Cost 5)
-  , mkPet "Edddy" (Attack 10) (Defense 10) (Health 100) (Cost 5)
-  , mkPet "Kevly" (Attack 20) (Defense 20) (Health 25) (Cost 5)
-  , mkPet "Renly" (Attack 10) (Defense 15) (Health 15) (Cost 5)
-  , mkPet "Fedly" (Attack 3) (Defense 25) (Health 30) (Cost 5)
-  , mkPet "Pengy" (Attack 90) (Defense 90) (Health 90) (Cost 5)
+  [ mkPet "Ralfy" (Attack 10) (Health 30) (Cost 5)
+  , mkPet "Teddy" (Attack 10)(Health 35) (Cost 5)
+  , mkPet "Fredd" (Attack 7) (Health 20) (Cost 5)
+  , mkPet "Neddd" (Attack 30) (Health 5) (Cost 5)
+  , mkPet "Edddy" (Attack 10) (Health 100) (Cost 5)
+  , mkPet "Kevly" (Attack 20) (Health 25) (Cost 5)
+  , mkPet "Renly" (Attack 10) (Health 15) (Cost 5)
+  , mkPet "Fedly" (Attack 3) (Health 30) (Cost 5)
+  , mkPet "Pengy" (Attack 90) (Health 90) (Cost 5)
   ]
 
 
