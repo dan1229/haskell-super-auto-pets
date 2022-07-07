@@ -27,7 +27,7 @@ main = do
     putStrBar
     putStrLn "What's your name?"
     username <- getLine
-    let user = User { userName=username, userRoster=rosterEmpty}
+    let user = User { userName=username, userRoster=rosterEmpty, uesrItemList=itemListEmpty }
 
     putStrLn $ "\nWelcome " ++ (userName user) ++ "!"
     gameMenu user 1

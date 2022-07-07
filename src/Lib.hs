@@ -66,6 +66,9 @@ newtype Defense = Defense {getDefense::Int} deriving Show  -- how does defense w
 newtype Health = Health {getHealth::Int} deriving Show
 newtype Cost = Cost {getCost::Int} deriving (Num, Ord, Eq)
 
+-- TODO add items list to pet
+-- get rid of defense
+
 class Attribute a where
     valid :: a -> Bool
 
@@ -138,7 +141,7 @@ getPet xs = do
 data User = User
   { userName :: String
   , userRoster :: Roster
-  -- TODO health?
+  , userItemList :: ItemList
   }
 
 data Roster = Roster
@@ -160,3 +163,21 @@ rosterEmpty = Roster
   , rosterPet5 = Nothing
   , rosterPet6 = Nothing
   }
+
+
+data Item = Item
+  { itemName :: Name
+  -- TODO how to model item effects?
+  }
+
+data ItemList = ItemList
+  { itemListItem1 :: Maybe Item
+  , itemListItem2 :: Maybe Item
+  , itemListItem3 :: Maybe Item
+  }
+
+itemListEmpty :: ItemList
+itemListEmpty = ItemList
+  { itemListItem1 = Nothing,
+  , itemListItem2 = Nothing,
+  , itemListItem3 = Nothing,}
