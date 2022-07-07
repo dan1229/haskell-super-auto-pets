@@ -2,6 +2,8 @@ module Lib where
 import System.Random
 import Data.String (IsString)
 
+goldInitial :: Cost
+goldIinitial = (Cost 15)
 
 --
 -- GAME FLOW
@@ -9,7 +11,7 @@ import Data.String (IsString)
 startRound :: User -> Int -> IO ()
 startRound user round = do
     putStrLn $ "Round " ++ show round ++ " starting..."
-    startPetSelection user (Cost 15)
+    startPetSelection user goldInitial
 
 
 startPetSelection :: User -> Cost -> IO ()
@@ -44,10 +46,18 @@ startPetSelection user goldRemaining = do
 startBattle :: User -> IO ()
 startBattle user = do
     putStrBar
+    putStrLn "YOUR TEAM"
     putStrLn $ show (userRoster user)
-    putStrLn "\nBATTLE"
-    putStrLn "BATTLE"
-    putStrLn "BATTLE"
+    
+
+    -- Create enemy team
+    -- TODO create their lineup using gold the same as the player
+    petOpponent1 <- getPet allPets
+    petOpponent2 <- getPet allPets
+    petOpponent3 <- getPet allPets
+    let petsOpponent = [petOpponent1, petOpponent2, petOpponent3]
+    putStrLn "ENEMY TEAM"
+    putStrLn $ show (petsOpponent)
     -- TODO BATTLE
 
 
