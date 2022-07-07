@@ -147,6 +147,10 @@ data Pet = Pet
   , petHealthRemaining :: Health
   , petCost :: Cost
   }
+
+mkPet :: Name -> Attack -> Health -> Cost -> Pet
+mkPet name attack health cost = Pet name attack health health cost
+
 -- TODO how to do this? is this the best way to do this? is this necessary?
 -- data AnimalType = Turtle | Ant | Penguin | etc...
 
@@ -161,15 +165,15 @@ instance Display Pet where
 -- global list of pets
 allPets :: [Pet]
 allPets =
-  [ Pet "Ralfy" (Attack 10) (Health 30) (Cost 5)
-  , Pet "Teddy" (Attack 10)(Health 35) (Cost 5)
-  , Pet "Fredd" (Attack 7) (Health 20) (Cost 5)
-  , Pet "Neddd" (Attack 30) (Health 5) (Cost 5)
-  , Pet "Edddy" (Attack 10) (Health 100) (Cost 5)
-  , Pet "Kevly" (Attack 20) (Health 25) (Cost 5)
-  , Pet "Renly" (Attack 10) (Health 15) (Cost 5)
-  , Pet "Fedly" (Attack 3) (Health 30) (Cost 5)
-  , Pet "Pengy" (Attack 90) (Health 90) (Cost 5)
+  [ mkPet "Ralfy" (Attack 10) (Health 30) (Cost 5)
+  , mkPet "Teddy" (Attack 10)(Health 35) (Cost 5)
+  , mkPet "Fredd" (Attack 7) (Health 20) (Cost 5)
+  , mkPet "Neddd" (Attack 30) (Health 5) (Cost 5)
+  , mkPet "Edddy" (Attack 10) (Health 100) (Cost 5)
+  , mkPet "Kevly" (Attack 20) (Health 25) (Cost 5)
+  , mkPet "Renly" (Attack 10) (Health 15) (Cost 5)
+  , mkPet "Fedly" (Attack 3) (Health 30) (Cost 5)
+  , mkPet "Pengy" (Attack 90) (Health 90) (Cost 5)
   ]
 
 
