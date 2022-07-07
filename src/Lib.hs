@@ -1,7 +1,6 @@
 module Lib where
 import System.Random
 import Data.String (IsString)
-import Data.Maybe (fromJust)
 
 
 --
@@ -20,8 +19,8 @@ startPetSelection user goldRemaining = do
     pet1 <- getPet allPets
     pet2 <- getPet allPets
     pet3 <- getPet allPets
-    let petChoices = [fromJust pet1, fromJust pet2, fromJust pet3]
-    putStrLn $ "1. " ++ show (petChoices !! 0) -- is fromJust bad? GOOSE
+    let petChoices = [pet1, pet2, pet3]
+    putStrLn $ "1. " ++ show (petChoices !! 0)
     putStrLn $ "2. " ++ show (petChoices !! 1)
     putStrLn $ "3. " ++ show (petChoices !! 2)
 
@@ -31,14 +30,14 @@ startPetSelection user goldRemaining = do
     inputPet <- getLine 
     let choice = (read inputPet :: Int)
     let pet = petChoices !! (choice - 1) 
-    putStrLn $ "\nYou've selected: " ++ show pet -- TODO check input GOOSE
+    putStrLn $ "\nYou've selected: " ++ show pet
+    let roster' = insertPet pet (userRoster user)
+    let user' = user{ userRoster=roster', userItemList=(userItemList user) }
 
-    let tmp = goldRemaining - (petCost pet)
-    -- TODO how to add pet to userRoster?
-    -- GOOSE
-    if tmp > (Cost 0)
-        then startPetSelection user tmp
-    else startBattle user
+    let goldRemaining' = goldRemaining - (petCost pet)
+    if goldRemaining' > (Cost 0)
+        then startPetSelection user' goldRemaining'
+    else startBattle user'
 
 
 
@@ -101,24 +100,19 @@ data Pet = Pet
 instance Show Pet where
   show (Pet name attack health cost) = (getName name) ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ show (getHealth health) ++ ")"
 
-mkPet :: Name -> Attack -> Health -> Cost -> Maybe Pet
-mkPet name attack health cost
-    | valid name && valid attack && valid health && valid cost = Just $ Pet name attack health cost
-    | otherwise = Nothing
-
 
 -- global list of pets
-allPets :: [Maybe Pet]
+allPets :: [Pet]
 allPets =
-  [ mkPet "Ralfy" (Attack 10) (Health 30) (Cost 5)
-  , mkPet "Teddy" (Attack 10)(Health 35) (Cost 5)
-  , mkPet "Fredd" (Attack 7) (Health 20) (Cost 5)
-  , mkPet "Neddd" (Attack 30) (Health 5) (Cost 5)
-  , mkPet "Edddy" (Attack 10) (Health 100) (Cost 5)
-  , mkPet "Kevly" (Attack 20) (Health 25) (Cost 5)
-  , mkPet "Renly" (Attack 10) (Health 15) (Cost 5)
-  , mkPet "Fedly" (Attack 3) (Health 30) (Cost 5)
-  , mkPet "Pengy" (Attack 90) (Health 90) (Cost 5)
+  [ Pet "Ralfy" (Attack 10) (Health 30) (Cost 5)
+  , Pet "Teddy" (Attack 10)(Health 35) (Cost 5)
+  , Pet "Fredd" (Attack 7) (Health 20) (Cost 5)
+  , Pet "Neddd" (Attack 30) (Health 5) (Cost 5)
+  , Pet "Edddy" (Attack 10) (Health 100) (Cost 5)
+  , Pet "Kevly" (Attack 20) (Health 25) (Cost 5)
+  , Pet "Renly" (Attack 10) (Health 15) (Cost 5)
+  , Pet "Fedly" (Attack 3) (Health 30) (Cost 5)
+  , Pet "Pengy" (Attack 90) (Health 90) (Cost 5)
   ]
 
 
@@ -126,6 +120,17 @@ getPet :: [a] -> IO a
 getPet xs = do
   idx <- randomRIO (0, length xs - 1)
   pure $ xs !! idx
+
+
+insertPet :: Pet -> Roster -> Roster
+insertPet p roster = case roster of
+  Roster Nothing _ _ _ _ _ -> roster{ rosterPet1=(Just p) }
+  Roster _ Nothing _ _ _ _ -> roster{ rosterPet2=(Just p) }
+  Roster _ _ Nothing _ _ _ -> roster{ rosterPet3=(Just p) }
+  Roster _ _ _ Nothing _ _ -> roster{ rosterPet4=(Just p) }
+  Roster _ _ _ _ Nothing _ -> roster{ rosterPet5=(Just p) }
+  Roster _ _ _ _ _ Nothing -> roster{ rosterPet6=(Just p) }
+  _ -> error "OH NO"
 
 
 --
@@ -171,6 +176,7 @@ data ItemList = ItemList
 
 itemListEmpty :: ItemList
 itemListEmpty = ItemList
-  { itemListItem1 = Nothing,
-  , itemListItem2 = Nothing,
-  , itemListItem3 = Nothing,}
+  { itemListItem1 = Nothing
+  , itemListItem2 = Nothing
+  , itemListItem3 = Nothing
+  }
