@@ -183,6 +183,9 @@ data User = User
   , userItemList :: ItemList
   }
 
+--
+-- ROSTER
+--
 data Roster = Roster
   { rosterPet1 :: Maybe Pet
   , rosterPet2 :: Maybe Pet
@@ -203,7 +206,14 @@ rosterEmpty = Roster
   , rosterPet6 = Nothing
   }
 
+-- TODO fix this
+-- instance Display Roster where
+--   display (Roster p1 p2 p3 p4 p5 p6) = (display Just p1) ++ (display Just p2) ++ (display Just p3) ++ (display Just p4)
 
+
+--
+-- ITEM
+--
 data Item = Item
   { itemName :: Name
   -- TODO how to model item effects?
