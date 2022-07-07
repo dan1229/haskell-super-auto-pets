@@ -58,8 +58,21 @@ startBattle user = do
     petOpponent1 <- getPet allPets
     petOpponent2 <- getPet allPets
     petOpponent3 <- getPet allPets
-    let opponentRoster = Roster {rosterPet1=(Just petOpponent1), rosterPet2=(Just petOpponent2), rosterPet3=(Just petOpponent3), rosterPet4=Nothing, rosterPet5=Nothing, rosterPet6=Nothing}
-    let userOpponent = User { userName="OPPONENT", userRoster=opponentRoster, userItemList=itemListEmpty }
+    let 
+      opponentRoster = Roster
+        { rosterPet1 = Just petOpponent1
+        , rosterPet2 = Just petOpponent2
+        , rosterPet3 = Just petOpponent3
+        , rosterPet4 = Nothing
+        , rosterPet5 = Nothing
+        , rosterPet6 = Nothing
+        }
+    let
+      userOpponent = User
+        { userName = "OPPONENT"
+        , userRoster = opponentRoster
+        , userItemList = itemListEmpty
+        }
     putStrLn "\nOPPONENT TEAM"
     putStrLn $ show (opponentRoster)
 
@@ -67,7 +80,7 @@ startBattle user = do
     rosterBattle user userOpponent
 
 
-rosterBattle :: User -> User -> IO()
+rosterBattle :: User -> User -> IO ()
 rosterBattle user1 user2 = do
   let r1pet = getRosterFirst (userRoster user1)
   let r2pet = getRosterFirst (userRoster user2)
@@ -82,9 +95,9 @@ rosterBattle user1 user2 = do
 
   let user1Pet = fromJust r1pet
   let user2Pet = fromJust r2pet
-  putStrLn $ (userName user1) ++ ": " ++ (show user1Pet)
+  putStrLn $ userName user1 ++ ": " ++ show user1Pet
   putStrLn $ "vs."
-  putStrLn $ (userName user2) ++ ": " ++ (show user2Pet)
+  putStrLn $ userName user2 ++ ": " ++ show user2Pet
 
 
   -- TODO
@@ -168,10 +181,10 @@ mkPet name attack health cost = Pet name attack health health cost
 
 
 instance Show Pet where  -- TODO replace all shows with displays
-  show (Pet name attack health healthRemaining cost) = (getName name) ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ "/" ++ show (getHealth health) ++ ")"
+  show (Pet name attack health healthRemaining cost) = getName name ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ "/" ++ show (getHealth health) ++ ")"
 
 instance Display Pet where
-  display (Pet name attack health healthRemaining cost) = (getName name) ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ "/" ++ show (getHealth health) ++ ")"
+  display (Pet name attack health healthRemaining cost) = getName name ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ "/" ++ show (getHealth health) ++ ")"
 
 
 allPets :: [Pet]
