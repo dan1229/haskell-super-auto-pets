@@ -31,7 +31,7 @@ startPetSelection user goldRemaining = do
 
     -- deal with pet selection and gold
     putStrLn $ "\nYou have $" ++ show goldRemaining ++ " gold remaining."
-    choice <- keepAskingWhere "Select your pet:" (betweenInclusive 1 3)
+    choice <- keepAskingWhere "Select your pet: " (betweenInclusive 1 3)
     let pet = petChoices !! (choice - 1) 
     putStrLn $ "\nYou've selected: " ++ show pet
     let roster' = insertPet pet (userRoster user)
@@ -49,17 +49,24 @@ startBattle user = do
     putStrBar
     putStrLn "YOUR TEAM"
     putStrLn $ show (userRoster user)
+    -- TODO add team name?
 
     -- Create enemy team
     -- TODO create their lineup using gold the same as the player
     petOpponent1 <- getPet allPets
     petOpponent2 <- getPet allPets
     petOpponent3 <- getPet allPets
-    let petsOpponent = [petOpponent1, petOpponent2, petOpponent3]
-    putStrLn "ENEMY TEAM"
-    putStrLn $ show (petsOpponent)
+    let opponentRoster = Roster {rosterPet1=(Just petOpponent1), rosterPet2=(Just petOpponent2), rosterPet3=(Just petOpponent3), rosterPet4=Nothing, rosterPet5=Nothing, rosterPet6=Nothing}
+    putStrLn "\nENEMY TEAM"
+    putStrLn $ show (opponentRoster)
 
     -- TODO BATTLE
+    rosterBattle (userRoster user) opponentRoster
+
+
+rosterBattle :: Roster -> Roster -> IO()
+rosterBattle r1 r2 = do
+  putStrLn "BATTLE"
 
 
 putStrBar :: IO ()
@@ -67,22 +74,23 @@ putStrBar = do
     putStrLn "\n==================="
 
 -- keep asking
-keepAsking :: Read a => String -> IO a
-keepAsking s = do
+keepAskingWhere :: Read a => String -> (a -> Bool) -> IO a
+keepAskingWhere s p = do
   putStr s
   hFlush stdout
   mresult <- readMaybe <$> getLine
   case mresult of
-    Nothing -> keepAsking s
-    Just a -> pure a
+    Nothing -> keepAskingWhere s p
+    Just a -> if p a then pure a else keepAskingWhere s p
 
-keepAskingWhere :: Read a => String -> (a -> Bool) -> IO a
-keepAskingWhere s p = do
-  a <- keepAsking s
-  if p a then pure a else keepAskingWhere s p
+
+keepAsking :: Read a => String -> IO a
+keepAsking s = keepAskingWhere s (const True)
+
 
 betweenInclusive :: Int -> Int -> Int -> Bool
 betweenInclusive a b x = a <= x && x <= b
+
 
 --
 -- ATTRIBUTES
