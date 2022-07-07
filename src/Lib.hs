@@ -58,15 +58,29 @@ startBattle user = do
     petOpponent2 <- getPet allPets
     petOpponent3 <- getPet allPets
     let opponentRoster = Roster {rosterPet1=(Just petOpponent1), rosterPet2=(Just petOpponent2), rosterPet3=(Just petOpponent3), rosterPet4=Nothing, rosterPet5=Nothing, rosterPet6=Nothing}
-    putStrLn "\nENEMY TEAM"
+    let userOpponent = User { userName="OPPONENT", userRoster=opponentRoster, userItemList=itemListEmpty }
+    putStrLn "\nOPPONENT TEAM"
     putStrLn $ show (opponentRoster)
 
     -- TODO BATTLE
-    rosterBattle (userRoster user) opponentRoster
+    rosterBattle user userOpponent
 
 
-rosterBattle :: Roster -> Roster -> IO()
-rosterBattle r1 r2 = do
+rosterBattle :: User -> User -> IO()
+rosterBattle user1 user2 = do
+  let r1pet = getPetRosterFirst (userRoster user1)
+  let r2pet = getPetRosterFirst (userRoster user2)
+
+  if (r1pet == Nothing) then putStrLn "user1 LOSES"
+  if (r2pet == Nothing) then putStrLn "user2 LOSES"
+
+  -- TODO
+  -- get first element in each roster to face off
+  --    IF EITHER IS EMPTY - THE OTHER ROSTER WINS
+  --        May need to pass 'User' instead of 'Roster' for this
+  -- update each pet's health
+  -- create new rosters and battle again
+
   putStrLn "BATTLE"
 
 
@@ -183,8 +197,16 @@ insertPet p roster = case roster of
 --   _ -> error "OH NO"
 
 
--- getPetRosterFirst :: Roster -> Maybe Pet
--- getPetRosterFirst roster = getPetRoster 0 roster
+getPetRosterFirst :: Roster -> Maybe Pet
+getPetRosterFirst roster = do
+  Roster p _ _ _ _ _ -> Just p
+  Roster Nothing p _ _ _ _ -> Just p
+  Roster Nothing Nothing p _ _ _ -> Just p
+  Roster Nothing Nothing Nothing p _ _ -> Just p
+  Roster Nothing Nothing Nothing Nothing p _ -> Just p
+  Roster Nothing Nothing Nothing Nothing Nothing p -> Just p
+  Roster Nothing Nothing Nothing Nothing Nothing Nothing -> Nothing
+  _ -> error "IMPOSSIBLEEE"
 
 
 
