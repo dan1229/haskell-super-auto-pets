@@ -4,7 +4,8 @@ import Data.String (IsString)
 
 import System.IO (hFlush, stdout)
 import Text.Read (readMaybe)
-import Data.Maybe (fromJust)
+import Data.Maybe (fromJust, isNothing)
+
 
 goldInitial :: Cost
 goldInitial = (Cost 15)
@@ -71,8 +72,20 @@ rosterBattle user1 user2 = do
   let r1pet = getPetRosterFirst (userRoster user1)
   let r2pet = getPetRosterFirst (userRoster user2)
 
-  if (r1pet == Nothing) then putStrLn "user1 LOSES"
-  if (r2pet == Nothing) then putStrLn "user2 LOSES"
+  if isNothing r1pet
+    then putStrLn "user1 LOSES"
+    else putStrLn ""   -- wont compile without else?
+  if isNothing r2pet
+    then putStrLn "user2 LOSES"
+    else putStrLn ""
+
+
+  let user1Pet = fromJust r1pet
+  let user2Pet = fromJust r2pet
+  putStrLn $ (userName user1) ++ ": " ++ (show user1Pet)
+  putStrLn $ "vs."
+  putStrLn $ (userName user2) ++ ": " ++ (show user2Pet)
+
 
   -- TODO
   -- get first element in each roster to face off
@@ -156,10 +169,10 @@ mkPet name attack health cost = Pet name attack health health cost
 
 
 instance Show Pet where
-  show (Pet name attack health healthRemaining cost) = (getName name) ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ show (getHealth healthRemaining) ++ "/" ++ show (getHealth health) ++ ")"
+  show (Pet name attack health healthRemaining cost) = (getName name) ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ "/" ++ show (getHealth health) ++ ")"
 
 instance Display Pet where
-  display (Pet name attack health healthRemaining cost) = (getName name) ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ show (gethealth healthRemaining) ++ "/" ++ show (getHealth health) ++ ")"
+  display (Pet name attack health healthRemaining cost) = (getName name) ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ "/" ++ show (getHealth health) ++ ")"
 
 
 -- global list of pets
@@ -202,15 +215,14 @@ insertPet p roster = case roster of
 
 
 getPetRosterFirst :: Roster -> Maybe Pet
-getPetRosterFirst roster = do
-  Roster p _ _ _ _ _ -> Just p
-  Roster Nothing p _ _ _ _ -> Just p
-  Roster Nothing Nothing p _ _ _ -> Just p
-  Roster Nothing Nothing Nothing p _ _ -> Just p
-  Roster Nothing Nothing Nothing Nothing p _ -> Just p
-  Roster Nothing Nothing Nothing Nothing Nothing p -> Just p
-  Roster Nothing Nothing Nothing Nothing Nothing Nothing -> Nothing
-  _ -> error "IMPOSSIBLEEE"
+getPetRosterFirst roster = case roster of
+  Roster p _ _ _ _ _ -> p
+  Roster Nothing p _ _ _ _ -> p
+  Roster Nothing Nothing p _ _ _ -> p
+  Roster Nothing Nothing Nothing p _ _ -> p
+  Roster Nothing Nothing Nothing Nothing p _ -> p
+  Roster Nothing Nothing Nothing Nothing Nothing p -> p
+  Roster Nothing Nothing Nothing Nothing Nothing Nothing -> Nothing -- says this line is redundant?
 
 
 
