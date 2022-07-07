@@ -25,9 +25,9 @@ startPetSelection user goldRemaining = do
     pet2 <- getPet allPets
     pet3 <- getPet allPets
     let petChoices = [pet1, pet2, pet3]
-    putStrLn $ "1. " ++ show (petChoices !! 0)
-    putStrLn $ "2. " ++ show (petChoices !! 1)
-    putStrLn $ "3. " ++ show (petChoices !! 2)
+    putStrLn $ "1. " ++ display (petChoices !! 0)
+    putStrLn $ "2. " ++ display (petChoices !! 1)
+    putStrLn $ "3. " ++ display (petChoices !! 2)
 
     -- deal with pet selection and gold
     putStrLn $ "\nYou have $" ++ show goldRemaining ++ " gold remaining."
@@ -100,24 +100,26 @@ newtype Attack = Attack {getAttack::Int} deriving Show
 newtype Health = Health {getHealth::Int} deriving Show
 newtype Cost = Cost {getCost::Int} deriving (Num, Ord, Eq)
 
+class Display a where
+  display :: a -> String
 
 class Attribute a where
-    valid :: a -> Bool
+  valid :: a -> Bool
 
 instance Attribute Name where
-    valid (Name x) = x /= ""
+  valid (Name x) = x /= ""
 
 instance Attribute Attack where
-    valid (Attack x) = x > 0
+  valid (Attack x) = x > 0
 
 instance Attribute Health where
-    valid (Health x) = x > 0
+  valid (Health x) = x > 0
 
 instance Attribute Cost where
-    valid (Cost x) = x >= 0
+  valid (Cost x) = x >= 0
 
 instance Show Cost where
-    show (Cost x) = show x
+  show (Cost x) = show x
 
 
 --
@@ -135,6 +137,9 @@ data Pet = Pet
 
 instance Show Pet where
   show (Pet name attack health cost) = (getName name) ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ show (getHealth health) ++ ")"
+
+instance Display Pet where
+  display (Pet name attack health cost) = (getName name) ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ show (getHealth health) ++ ")"
 
 
 -- global list of pets
