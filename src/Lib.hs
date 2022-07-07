@@ -1,9 +1,12 @@
 module Lib where
-import System.Random
+import System.Random (randomRIO)
 import Data.String (IsString)
 
+import System.IO (hFlush, stdout)
+import Text.Read (readMaybe)
+
 goldInitial :: Cost
-goldIinitial = (Cost 15)
+goldInitial = (Cost 15)
 
 --
 -- GAME FLOW
@@ -28,9 +31,7 @@ startPetSelection user goldRemaining = do
 
     -- deal with pet selection and gold
     putStrLn $ "\nYou have $" ++ show goldRemaining ++ " gold remaining."
-    putStrLn $ "Select pet: "
-    inputPet <- getLine 
-    let choice = (read inputPet :: Int)
+    choice <- keepAskingWhere "Select your pet:" (betweenInclusive 1 3)
     let pet = petChoices !! (choice - 1) 
     putStrLn $ "\nYou've selected: " ++ show pet
     let roster' = insertPet pet (userRoster user)
@@ -48,7 +49,6 @@ startBattle user = do
     putStrBar
     putStrLn "YOUR TEAM"
     putStrLn $ show (userRoster user)
-    
 
     -- Create enemy team
     -- TODO create their lineup using gold the same as the player
@@ -58,6 +58,7 @@ startBattle user = do
     let petsOpponent = [petOpponent1, petOpponent2, petOpponent3]
     putStrLn "ENEMY TEAM"
     putStrLn $ show (petsOpponent)
+
     -- TODO BATTLE
 
 
@@ -65,6 +66,23 @@ putStrBar :: IO ()
 putStrBar = do
     putStrLn "\n==================="
 
+-- keep asking
+keepAsking :: Read a => String -> IO a
+keepAsking s = do
+  putStr s
+  hFlush stdout
+  mresult <- readMaybe <$> getLine
+  case mresult of
+    Nothing -> keepAsking s
+    Just a -> pure a
+
+keepAskingWhere :: Read a => String -> (a -> Bool) -> IO a
+keepAskingWhere s p = do
+  a <- keepAsking s
+  if p a then pure a else keepAskingWhere s p
+
+betweenInclusive :: Int -> Int -> Int -> Bool
+betweenInclusive a b x = a <= x && x <= b
 
 --
 -- ATTRIBUTES
@@ -190,3 +208,4 @@ itemListEmpty = ItemList
   , itemListItem2 = Nothing
   , itemListItem3 = Nothing
   }
+

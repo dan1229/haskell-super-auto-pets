@@ -8,10 +8,8 @@ gameMenu user round = do
     putStrLn "Want to play?"
     putStrLn "1. Yes"
     putStrLn "2. No (exit)"
-    input1 <- getLine 
-    let choice = (read input1 :: Int)  -- how to make this safe? i.e., 'a' doesnt work
-    -- GOOSE
-    -- try/catch in haskell https://stackoverflow.com/questions/6009384/exception-handling-in-haskell
+    choice <- keepAskingWhere ">> " (betweenInclusive 1 2)
+
     -- GOOSE
     -- how to deal with recursion/while loop
     if choice == 1
