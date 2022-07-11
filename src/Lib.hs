@@ -77,11 +77,11 @@ startBattle user = do
     putStrLn $ show (opponentRoster)
 
     -- TODO BATTLE
-    rosterBattle user userOpponent
+    battleRoster user userOpponent
 
 
-rosterBattle :: User -> User -> IO ()
-rosterBattle user1 user2 = do
+battleRoster :: User -> User -> IO ()
+battleRoster user1 user2 = do
   let r1pet = getRosterFirst (userRoster user1)
   let r2pet = getRosterFirst (userRoster user2)
 
@@ -95,21 +95,34 @@ rosterBattle user1 user2 = do
 
   let user1Pet = fromJust r1pet
   let user2Pet = fromJust r2pet
-  putStrLn $ userName user1 ++ ": " ++ show user1Pet
+  putStrLn $ userName user1 ++ ": " ++ display user1Pet
   putStrLn $ "vs."
-  putStrLn $ userName user2 ++ ": " ++ show user2Pet
+  putStrLn $ userName user2 ++ ": " ++ display user2Pet
+
+  -- battle pets
+  battlePets user1Pet user2Pet
+
+  -- create new rosters (and users) and battle again
+  -- roster{ rosterPet1=(Just p) }
+  -- let user = User { userName=username, userRoster=rosterEmpty, userItemList=itemListEmpty }
 
 
-  -- TODO
+battlePets :: Pet -> Pet -> IO ()
+battlePets p1 p2 = do
+  putStrLn "BATTLE"
+
   -- ATTACK
-    -- take turns dealing damage - who goes first?
+  p1HealthRemaining = getHealth (healthRemaining p1) - getAttack (attack p2)
+  p2HealthRemaining = getHealth (healthRemaining p2) - getAttack (attack p1)
+
+  -- create new pets with new health
+  let p1' = p1 { (name p1) (attack p1) (health p1) (Health p1HealthRemaining) (cost p1) }
+  let p2' = p2 { (name p2) (attack p2) (health p2) (Health p2HealthRemaining) (cost p2) }
 
   -- update each pet's health
     -- see if any are dead i.e., petHealthRemaining <= 0
 
-  -- create new rosters and battle again
 
-  putStrLn "BATTLE"
 
 
 putStrBar :: IO ()
