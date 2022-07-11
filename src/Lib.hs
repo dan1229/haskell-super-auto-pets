@@ -89,38 +89,44 @@ battleRoster user1 user2 = do
 
   let user1Pet = fromJust r1pet
   let user2Pet = fromJust r2pet
+  putStrLn "\n"
   putStrLn $ userName user1 ++ ": " ++ display user1Pet
   putStrLn $ "vs."
   putStrLn $ userName user2 ++ ": " ++ display user2Pet
 
   -- battle pets
-  -- let (user1Pet', user2Pet') = battlePets user1Pet user2Pet
+  let (user1Pet', user2Pet') = battlePets user1Pet user2Pet
+
+  putStrLn "\nResult:"
+  displayPets user1Pet' user2Pet'
 
   -- create new rosters (and users) and battle again
   -- roster{ rosterPet1=(Just p) }
   -- let user = User { userName=username, userRoster=rosterEmpty, userItemList=itemListEmpty }
   -- battleRoster user1' user2'
-  putStrLn "BATTLE"
 
 
--- battlePets :: Pet -> Pet -> (Pet, Pet) -- dont hate me
--- battlePets p1 p2 = do
---   putStrLn "BATTLE"
+battlePets :: Pet -> Pet -> (Pet, Pet) -- dont hate me
+battlePets p1 p2 = do
+  -- ATTACK
+  let p1HealthRemaining = getHealth (petHealthRemaining p1) - getAttack (petAttack p2)
+  let p2HealthRemaining = getHealth (petHealthRemaining p2) - getAttack (petAttack p1)
 
---   -- ATTACK
---   let p1HealthRemaining = getHealth (petHealthRemaining p1) - getAttack (petAttack p2)
---   let p2HealthRemaining = getHealth (petHealthRemaining p2) - getAttack (petAttack p1)
+  -- create new pets with new health
+  let p1' = Pet { petName=(petName p1), petAttack=(petAttack p1), petHealth=(petHealth p1), petHealthRemaining=(Health p1HealthRemaining), petCost=(petCost p1)}
+  let p2' = Pet { petName=(petName p2), petAttack=(petAttack p2), petHealth=(petHealth p2), petHealthRemaining=(Health p2HealthRemaining), petCost=(petCost p2)}
 
---   -- create new pets with new health
---   let p1' = p1 { petName=(petName p1), petAttack=(petAttack p1), petHealth=(petHealth p1), petHealthRemaining=(Health p1HealthRemaining), petCost=(petCost p1)}
---   let p2' = p2 { petName=(petName p2), petAttack=(petAttack p2), petHealth=(petHealth p2), petHealthRemaining=(Health p2HealthRemaining), petCost=(petCost p2)}
-
---   -- check results
---   if ((getHealth (petHealthRemaining p1) < 0) || (getHealth (petHealthRemaining p2) < 0))
---     then (p1', p2')  -- one or both pets are dead
---     else battlePets p1' p2'  -- not dead battle again
+  -- check results
+  if ((getHealth (petHealthRemaining p1) < 0) || (getHealth (petHealthRemaining p2) < 0))
+    then (p1', p2')  -- one or both pets are dead
+    else battlePets p1' p2'  -- not dead battle again
 
 
+displayPets :: Pet -> Pet -> IO ()
+displayPets p1 p2 = do
+  putStrLn $ display p1
+  putStrLn $ "vs."
+  putStrLn $ display p2
 
 
 putStrBar :: IO ()
@@ -188,15 +194,15 @@ data Pet = Pet
   }
 
 mkPet :: Name -> Attack -> Health -> Cost -> Pet
-mkPet name attack health cost = Pet name attack health health cost
+mkPet name attack health cost = Pet {petName=name, petAttack=attack, petHealth=health, petHealthRemaining=health, petCost=cost}
 
 
 instance Show Pet where  -- TODO replace all shows with displays
-  show (Pet name attack health healthRemaining cost) = getName name ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ "/" ++ show (getHealth health) ++ ")"
+  show (Pet name attack health healthRemaining cost) = getName name ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ show (getHealth healthRemaining) ++ show (getHealth health) ++ ")"
 
 -- TODO update to use emoji
 instance Display Pet where
-  display (Pet name attack health healthRemaining cost) = getName name ++ " $" ++ display cost ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ "/" ++ show (getHealth health) ++ ")"
+  display (Pet name attack health healthRemaining cost) = getName name ++ " $" ++ display cost ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ show (getHealth healthRemaining) ++ "/" ++ show (getHealth health) ++ ")"
 
 
 allPets :: [Pet]
