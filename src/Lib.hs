@@ -100,10 +100,18 @@ battleRoster user1 user2 = do
   putStrLn "\nResult:"
   displayPets user1Pet' user2Pet'
 
-  -- create new rosters (and users) and battle again
-  -- roster{ rosterPet1=(Just p) }
+  -- create new rosters (and users) - include 'dead' pets in roster to retain full original roster
+  let r1' = replacePet user1Pet' (userRoster user1)
+  let r2' = replacePet user2Pet' (userRoster user2)
+  
+  
   -- let user = User { userName=username, userRoster=rosterEmpty, userItemList=itemListEmpty }
-  -- battleRoster user1' user2'
+  let user1' = User {userName=(userName user1), userRoster=r1', userItemList=(userItemList user1)}
+  let user2' = User {userName=(userName user2), userRoster=r2', userItemList=(userItemList user2)}
+
+  -- TODO detech if either player is out of pets
+  battleRoster user1' user2'
+
 
 
 battlePets :: Pet -> Pet -> (Pet, Pet) -- dont hate me
@@ -236,7 +244,7 @@ insertPet p roster = case roster of
   _ -> error "OH NO"
 
 
-
+-- TODO update to account for healthRemaining
 getRosterFirst :: Roster -> Maybe Pet
 getRosterFirst roster = case roster of
   Roster (Just p) _ _ _ _ _ -> Just p
@@ -247,6 +255,13 @@ getRosterFirst roster = case roster of
   Roster Nothing Nothing Nothing Nothing Nothing (Just p) -> Just p
   Roster Nothing Nothing Nothing Nothing Nothing Nothing -> Nothing -- says this line is redundant?
 
+
+
+replacePet :: Pet -> Roster -> Roster
+replacePet pet roster = do
+  -- TODO how to insert back into same place in roster? i.e., if this was rosterPet3 how do I know that here?
+  -- roster{ rosterPet1=(Just p) }
+  roster
 
 
 --
