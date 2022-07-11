@@ -112,15 +112,19 @@ battlePets p1 p2 = do
   putStrLn "BATTLE"
 
   -- ATTACK
-  p1HealthRemaining = getHealth (healthRemaining p1) - getAttack (attack p2)
-  p2HealthRemaining = getHealth (healthRemaining p2) - getAttack (attack p1)
+  p1HealthRemaining = getHealth (petHealthRemaining p1) - getAttack (petAttack p2)
+  p2HealthRemaining = getHealth (petHealthRemaining p2) - getAttack (petAttack p1)
 
   -- create new pets with new health
-  let p1' = p1 { (name p1) (attack p1) (health p1) (Health p1HealthRemaining) (cost p1) }
-  let p2' = p2 { (name p2) (attack p2) (health p2) (Health p2HealthRemaining) (cost p2) }
+  let p1' = p1 { (petName p1) (petAttack p1) (petHealth p1) (Health p1HealthRemaining) (petCost p1) }
+  let p2' = p2 { (petName p2) (petAttack p2) (petHealth p2) (Health p2HealthRemaining) (petCost p2) }
 
-  -- update each pet's health
-    -- see if any are dead i.e., petHealthRemaining <= 0
+  if (getHealth (healthRemaining))
+    then putStrLn "user1 LOSES"
+    else putStrLn ""   -- wont compile without else?
+  if isNothing r2pet
+    then putStrLn "user2 LOSES"
+    else putStrLn ""
 
 
 
