@@ -48,7 +48,7 @@ startBattle :: User -> IO ()
 startBattle user = do
     putStrBar
     putStrLn "YOUR TEAM"
-    print (userRoster user)
+    putStrLn $ display (userRoster user)
     -- putStrLn $ show (userRoster user)
     
     -- Create opponent team
@@ -98,12 +98,11 @@ battleRoster user1 user2 = do
   putStrLn "\nResult:"
   displayPets user1Pet' user2Pet'
 
-  -- create new rosters (and users) - include 'dead' pets in roster to retain full original roster
-  let r1' = replacePet user1Pet' (userRoster user1)
-  let r2' = replacePet user2Pet' (userRoster user2)
+  -- create updated rosters  - include 'dead' pets in roster to retain full original roster
+  let r1' = replacePet user1Pet user1Pet' (userRoster user1)
+  let r2' = replacePet user2Pet user2Pet' (userRoster user2)
   
-  
-  -- let user = User { userName=username, userRoster=rosterEmpty, userItemList=itemListEmpty }
+  -- create updated users
   let user1' = User {userName=(userName user1), userRoster=r1', userItemList=(userItemList user1)}
   let user2' = User {userName=(userName user2), userRoster=r2', userItemList=(userItemList user2)}
 
@@ -166,9 +165,6 @@ newtype Attack = Attack {getAttack::Int} deriving Show
 newtype Health = Health {getHealth::Int} deriving Show
 newtype Cost = Cost {getCost::Int} deriving (Num, Ord, Eq)
 
-class Display a where
-  display :: a -> String
-
 class Attribute a where
   valid :: a -> Bool
 
@@ -183,10 +179,6 @@ instance Attribute Health where
 
 instance Attribute Cost where
   valid (Cost x) = x >= 0
-
-instance Display Cost where
-  display (Cost x) = show x
-
 
 --
 -- PETS
@@ -203,13 +195,6 @@ mkPet :: Name -> Attack -> Health -> Cost -> Pet
 mkPet name attack health cost = Pet {petName=name, petAttack=attack, petHealth=health, petHealthRemaining=health, petCost=cost}
 
 
-instance Show Pet where  -- TODO replace all shows with displays
-  show (Pet name attack health healthRemaining cost) = getName name ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ show (getHealth healthRemaining) ++ show (getHealth health) ++ ")"
-
--- TODO update to use emoji
-instance Display Pet where
-  display (Pet name attack health healthRemaining cost) = getName name ++ " $" ++ display cost ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ show (getHealth healthRemaining) ++ "/" ++ show (getHealth health) ++ ")"
-
 
 allPets :: [Pet]
 allPets =
@@ -221,7 +206,12 @@ allPets =
   , mkPet "Kevly" (Attack 20) (Health 25) (Cost 5)
   , mkPet "Renly" (Attack 10) (Health 15) (Cost 5)
   , mkPet "Fedly" (Attack 3) (Health 30) (Cost 5)
+  , mkPet "Slosom" (Attack 900) (Health 95) (Cost 12)
+  , mkPet "SandyMan" (Attack 10) (Health 100) (Cost 5)
+  , mkPet "Seth" (Attack 60 (Health 60) (Cost 6)
   , mkPet "Pengy" (Attack 90) (Health 90) (Cost 5)
+  , mkPet "Soupsir" (Attack 150) (Health 200) (Cost 9)
+  , mkPet "Pengy's evil brother" (Attack 90) (Health 90) (Cost 5)
   ]
 
 
@@ -243,6 +233,9 @@ insertPet p roster = case roster of
 
 
 -- TODO update to account for healthRemaining
+-- such that it will get the first pet with healthRemaining > 0
+-- probably leave this as 'generic' and add a 'specialized' version
+-- just like 'keepAsking'
 getRosterFirst :: Roster -> Maybe Pet
 getRosterFirst roster = case roster of
   Roster (Just p) _ _ _ _ _ -> Just p
@@ -255,10 +248,9 @@ getRosterFirst roster = case roster of
 
 
 
-replacePet :: Pet -> Roster -> Roster
-replacePet pet roster = do
-  -- TODO how to insert back into same place in roster? i.e., if this was rosterPet3 how do I know that here?
-  -- roster{ rosterPet1=(Just p) }
+replacePet :: Pet -> Pet -> Roster -> Roster
+replacePet petToRemove petToAdd roster = do
+  -- TODO
   roster
 
 
@@ -281,12 +273,8 @@ data Roster = Roster
   , rosterPet4 :: Maybe Pet
   , rosterPet5 :: Maybe Pet
   , rosterPet6 :: Maybe Pet
-  } deriving Show
+  }
 
-
--- TODO fix this
--- instance Display Roster where
---   display (Roster rp1 rp2 rp3 rp4 rp5 rp6) = "ROSTER: " ++ (display fromMaybe rp1) ++ ", " ++ display rp2 ++ ", " ++ display rp3 ++ ", " ++ display rp4 ++ ", " ++ display rp5 ++ ", " ++ display rp6
 
 rosterEmpty :: Roster
 rosterEmpty = Roster
@@ -319,3 +307,20 @@ itemListEmpty = ItemList
   , itemListItem3 = Nothing
   }
 
+
+--
+-- DISPLAY
+--
+
+class Display a where
+  display :: a -> String
+
+instance Display Cost where
+  display (Cost x) = show x
+
+-- TODO update to use emoji
+instance Display Pet where
+  display (Pet name attack health healthRemaining cost) = getName name ++ " $" ++ display cost ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ show (getHealth healthRemaining) ++ "/" ++ show (getHealth health) ++ ")"
+
+instance Display Roster where
+  display (Roster rp1 rp2 rp3 rp4 rp5 rp6) = "ROSTER: " ++ (display fromJust rp1) ++ ", " 
