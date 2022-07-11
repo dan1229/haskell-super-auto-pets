@@ -51,9 +51,7 @@ startBattle user = do
     print (userRoster user)
     -- putStrLn $ show (userRoster user)
     
-
-    -- Create enemy team
-    -- TODO create their lineup using gold the same as the player
+    -- Create opponent team
     petOpponent1 <- getPet allPets
     petOpponent2 <- getPet allPets
     petOpponent3 <- getPet allPets
@@ -109,7 +107,7 @@ battleRoster user1 user2 = do
   let user1' = User {userName=(userName user1), userRoster=r1', userItemList=(userItemList user1)}
   let user2' = User {userName=(userName user2), userRoster=r2', userItemList=(userItemList user2)}
 
-  -- TODO detech if either player is out of pets
+  -- TODO detect if either player is out of pets
   battleRoster user1' user2'
 
 
@@ -129,7 +127,7 @@ battlePets p1 p2 = do
     then (p1', p2')  -- one or both pets are dead
     else battlePets p1' p2'  -- not dead battle again
 
-
+-- print/display
 displayPets :: Pet -> Pet -> IO ()
 displayPets p1 p2 = do
   putStrLn $ display p1
