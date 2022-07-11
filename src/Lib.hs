@@ -100,31 +100,31 @@ battleRoster user1 user2 = do
   putStrLn $ userName user2 ++ ": " ++ display user2Pet
 
   -- battle pets
-  battlePets user1Pet user2Pet
+  let (user1Pet', user2Pet') = battlePets user1Pet user2Pet
 
   -- create new rosters (and users) and battle again
   -- roster{ rosterPet1=(Just p) }
   -- let user = User { userName=username, userRoster=rosterEmpty, userItemList=itemListEmpty }
+  -- battleRoster user1' user2'
+  putStrLn "BATTLE"
 
 
-battlePets :: Pet -> Pet -> IO ()
+battlePets :: Pet -> Pet -> (Pet, Pet) -- dont hate me
 battlePets p1 p2 = do
   putStrLn "BATTLE"
 
   -- ATTACK
-  p1HealthRemaining = getHealth (petHealthRemaining p1) - getAttack (petAttack p2)
-  p2HealthRemaining = getHealth (petHealthRemaining p2) - getAttack (petAttack p1)
+  let p1HealthRemaining = getHealth (petHealthRemaining p1) - getAttack (petAttack p2)
+  let p2HealthRemaining = getHealth (petHealthRemaining p2) - getAttack (petAttack p1)
 
   -- create new pets with new health
-  let p1' = p1 { (petName p1) (petAttack p1) (petHealth p1) (Health p1HealthRemaining) (petCost p1) }
-  let p2' = p2 { (petName p2) (petAttack p2) (petHealth p2) (Health p2HealthRemaining) (petCost p2) }
+  let p1' = p1 { petName=(petName p1), petAttack=(petAttack p1), petHealth=(petHealth p1), petHealthRemaining=(Health p1HealthRemaining), petCost=(petCost p1)}
+  let p2' = p2 { petName=(petName p2), petAttack=(petAttack p2), petHealth=(petHealth p2), petHealthRemaining=(Health p2HealthRemaining), petCost=(petCost p2)}
 
-  if (getHealth (healthRemaining))
-    then putStrLn "user1 LOSES"
-    else putStrLn ""   -- wont compile without else?
-  if isNothing r2pet
-    then putStrLn "user2 LOSES"
-    else putStrLn ""
+  -- check results
+  if ((getHealth (petHealthRemaining p1) < 0) || (getHealth (petHealthRemaining p2) < 0))
+    then (p1', p2')  -- one or both pets are dead
+    else battlePets p1' p2'  -- not dead battle again
 
 
 
