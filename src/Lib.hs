@@ -73,7 +73,7 @@ startBattle user = do
     putStrLn "\nOPPONENT TEAM"
     putStrLn $ show (opponentRoster)
 
-    -- TODO BATTLE
+    -- BATTLE
     battleRoster user userOpponent
 
 
