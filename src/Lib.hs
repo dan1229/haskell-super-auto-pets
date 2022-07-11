@@ -4,7 +4,7 @@ import Data.String (IsString)
 
 import System.IO (hFlush, stdout)
 import Text.Read (readMaybe)
-import Data.Maybe (fromJust, isNothing)
+import Data.Maybe (fromMaybe, fromJust, isNothing)
 
 
 goldInitial :: Cost
@@ -32,10 +32,10 @@ startPetSelection user goldRemaining = do
     putStrLn $ "3. " ++ display (petChoices !! 2)
 
     -- deal with pet selection and gold
-    putStrLn $ "\nYou have $" ++ show goldRemaining ++ " gold remaining."
+    putStrLn $ "\nYou have $" ++ display goldRemaining ++ " gold remaining."
     choice <- keepAskingWhere "Select your pet: " (betweenInclusive 1 3)
     let pet = petChoices !! (choice - 1) 
-    putStrLn $ "\nYou've selected: " ++ show pet
+    putStrLn $ "\nYou've selected: " ++ display pet
     let roster' = insertPet pet (userRoster user)
     let user' = user{ userRoster=roster', userItemList=(userItemList user) }
 
@@ -100,7 +100,7 @@ battleRoster user1 user2 = do
   putStrLn $ userName user2 ++ ": " ++ display user2Pet
 
   -- battle pets
-  let (user1Pet', user2Pet') = battlePets user1Pet user2Pet
+  -- let (user1Pet', user2Pet') = battlePets user1Pet user2Pet
 
   -- create new rosters (and users) and battle again
   -- roster{ rosterPet1=(Just p) }
@@ -109,22 +109,22 @@ battleRoster user1 user2 = do
   putStrLn "BATTLE"
 
 
-battlePets :: Pet -> Pet -> (Pet, Pet) -- dont hate me
-battlePets p1 p2 = do
-  putStrLn "BATTLE"
+-- battlePets :: Pet -> Pet -> (Pet, Pet) -- dont hate me
+-- battlePets p1 p2 = do
+--   putStrLn "BATTLE"
 
-  -- ATTACK
-  let p1HealthRemaining = getHealth (petHealthRemaining p1) - getAttack (petAttack p2)
-  let p2HealthRemaining = getHealth (petHealthRemaining p2) - getAttack (petAttack p1)
+--   -- ATTACK
+--   let p1HealthRemaining = getHealth (petHealthRemaining p1) - getAttack (petAttack p2)
+--   let p2HealthRemaining = getHealth (petHealthRemaining p2) - getAttack (petAttack p1)
 
-  -- create new pets with new health
-  let p1' = p1 { petName=(petName p1), petAttack=(petAttack p1), petHealth=(petHealth p1), petHealthRemaining=(Health p1HealthRemaining), petCost=(petCost p1)}
-  let p2' = p2 { petName=(petName p2), petAttack=(petAttack p2), petHealth=(petHealth p2), petHealthRemaining=(Health p2HealthRemaining), petCost=(petCost p2)}
+--   -- create new pets with new health
+--   let p1' = p1 { petName=(petName p1), petAttack=(petAttack p1), petHealth=(petHealth p1), petHealthRemaining=(Health p1HealthRemaining), petCost=(petCost p1)}
+--   let p2' = p2 { petName=(petName p2), petAttack=(petAttack p2), petHealth=(petHealth p2), petHealthRemaining=(Health p2HealthRemaining), petCost=(petCost p2)}
 
-  -- check results
-  if ((getHealth (petHealthRemaining p1) < 0) || (getHealth (petHealthRemaining p2) < 0))
-    then (p1', p2')  -- one or both pets are dead
-    else battlePets p1' p2'  -- not dead battle again
+--   -- check results
+--   if ((getHealth (petHealthRemaining p1) < 0) || (getHealth (petHealthRemaining p2) < 0))
+--     then (p1', p2')  -- one or both pets are dead
+--     else battlePets p1' p2'  -- not dead battle again
 
 
 
@@ -178,8 +178,8 @@ instance Attribute Health where
 instance Attribute Cost where
   valid (Cost x) = x >= 0
 
-instance Show Cost where
-  show (Cost x) = show x
+instance Display Cost where
+  display (Cost x) = show x
 
 
 --
@@ -200,8 +200,9 @@ mkPet name attack health cost = Pet name attack health health cost
 instance Show Pet where  -- TODO replace all shows with displays
   show (Pet name attack health healthRemaining cost) = getName name ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ "/" ++ show (getHealth health) ++ ")"
 
+-- TODO update to use emoji
 instance Display Pet where
-  display (Pet name attack health healthRemaining cost) = getName name ++ " $" ++ show (getCost cost) ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ "/" ++ show (getHealth health) ++ ")"
+  display (Pet name attack health healthRemaining cost) = getName name ++ " $" ++ display cost ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ "/" ++ show (getHealth health) ++ ")"
 
 
 allPets :: [Pet]
@@ -270,6 +271,10 @@ data Roster = Roster
   } deriving Show
 
 
+-- TODO fix this
+-- instance Display Roster where
+--   display (Roster rp1 rp2 rp3 rp4 rp5 rp6) = "ROSTER: " ++ (display fromMaybe rp1) ++ ", " ++ display rp2 ++ ", " ++ display rp3 ++ ", " ++ display rp4 ++ ", " ++ display rp5 ++ ", " ++ display rp6
+
 rosterEmpty :: Roster
 rosterEmpty = Roster
   { rosterPet1 = Nothing
@@ -280,17 +285,12 @@ rosterEmpty = Roster
   , rosterPet6 = Nothing
   }
 
--- TODO fix this
--- instance Display Roster where
---   display (Roster p1 p2 p3 p4 p5 p6) = (display Just p1) ++ (display Just p2) ++ (display Just p3) ++ (display Just p4)
-
 
 --
 -- ITEM
 --
 data Item = Item
   { itemName :: Name
-  -- TODO how to model item effects?
   }
 
 data ItemList = ItemList
