@@ -5,7 +5,7 @@ import Data.String (IsString)
 import System.IO (hFlush, stdout)
 import Text.Read (readMaybe)
 import Data.Maybe (fromMaybe, fromJust, isNothing)
-
+import Control.Monad (when)
 
 goldInitial :: Cost
 goldInitial = Cost 15
@@ -27,9 +27,7 @@ startPetSelection user goldRemaining = do
     pet2 <- getPet allPets
     pet3 <- getPet allPets
     let petChoices = [pet1, pet2, pet3]
-    putStrLn $ "1. " ++ display (petChoices !! 0)
-    putStrLn $ "2. " ++ display (petChoices !! 1)
-    putStrLn $ "3. " ++ display (petChoices !! 2)
+    mapM_ (\(idx, choice) -> putStrLn $ show idx ++ ". " ++ display choice) (zip [1..] petChoices) 
 
     -- deal with pet selection and gold
     putStrLn $ "\nYou have $" ++ display goldRemaining ++ " gold remaining."
@@ -50,8 +48,9 @@ startBattle :: User -> IO ()
 startBattle user = do
     putStrBar
     putStrLn "YOUR TEAM"
-    putStrLn $ show (userRoster user)
-    -- TODO add team name?
+    print (userRoster user)
+    -- putStrLn $ show (userRoster user)
+    
 
     -- Create enemy team
     -- TODO create their lineup using gold the same as the player
@@ -85,13 +84,8 @@ battleRoster user1 user2 = do
   let r1pet = getRosterFirst (userRoster user1)
   let r2pet = getRosterFirst (userRoster user2)
 
-  if isNothing r1pet
-    then putStrLn "user1 LOSES"
-    else putStrLn ""   -- wont compile without else?
-  if isNothing r2pet
-    then putStrLn "user2 LOSES"
-    else putStrLn ""
-
+  when (isNothing r1pet) (putStrLn "user1 LOSES")
+  when (isNothing r2pet) (putStrLn "user2 LOSES")
 
   let user1Pet = fromJust r1pet
   let user2Pet = fromJust r2pet
@@ -239,12 +233,12 @@ insertPet p roster = case roster of
 
 getRosterFirst :: Roster -> Maybe Pet
 getRosterFirst roster = case roster of
-  Roster p _ _ _ _ _ -> p
-  Roster Nothing p _ _ _ _ -> p
-  Roster Nothing Nothing p _ _ _ -> p
-  Roster Nothing Nothing Nothing p _ _ -> p
-  Roster Nothing Nothing Nothing Nothing p _ -> p
-  Roster Nothing Nothing Nothing Nothing Nothing p -> p
+  Roster (Just p) _ _ _ _ _ -> Just p
+  Roster Nothing (Just p) _ _ _ _ -> Just p
+  Roster Nothing Nothing (Just p) _ _ _ -> Just p
+  Roster Nothing Nothing Nothing (Just p) _ _ -> Just p
+  Roster Nothing Nothing Nothing Nothing (Just p) _ -> Just p
+  Roster Nothing Nothing Nothing Nothing Nothing (Just p) -> Just p
   Roster Nothing Nothing Nothing Nothing Nothing Nothing -> Nothing -- says this line is redundant?
 
 

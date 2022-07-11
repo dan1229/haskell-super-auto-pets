@@ -10,8 +10,8 @@ gameMenu user round = do
     putStrLn "2. No (exit)"
     choice <- keepAskingWhere ">> " (betweenInclusive 1 2)
 
-    -- GOOSE
-    -- how to deal with recursion/while loop
+    -- TODO add team name?
+
     if choice == 1
         then do
             startRound user round
