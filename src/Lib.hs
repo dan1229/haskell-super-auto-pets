@@ -117,9 +117,9 @@ battlePets p1 p2 = do
   let p2HealthRemaining = getHealth (petHealthRemaining p2) - getAttack (petAttack p1)
 
   -- create new pets with new health
-  let p1' = Pet { petName=(petName p1), petAttack=(petAttack p1), petHealth=(petHealth p1), petHealthRemaining=(Health p1HealthRemaining), petCost=(petCost p1)}
-  let p2' = Pet { petName=(petName p2), petAttack=(petAttack p2), petHealth=(petHealth p2), petHealthRemaining=(Health p2HealthRemaining), petCost=(petCost p2)}
-
+  let p1' = p1 { petHealthRemaining = (Health p1HealthRemaining) }
+  let p2' = p2 { petHealthRemaining = (Health p2HealthRemaining) }
+  
   -- check results
   if ((getHealth (petHealthRemaining p1') < 0) || (getHealth (petHealthRemaining p2') < 0))
     then (p1', p2')  -- one or both pets are dead
