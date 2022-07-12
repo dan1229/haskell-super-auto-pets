@@ -161,7 +161,7 @@ betweenInclusive a b x = a <= x && x <= b
 --
 newtype Name = Name {getName::String} deriving (IsString)
 newtype Attack = Attack {getAttack::Int} 
-newtype Health = Health {getHealth::Int} 
+newtype Health = Health {getHealth::Int} deriving (Num, Ord, Eq)
 newtype Cost = Cost {getCost::Int} deriving (Num, Ord, Eq)
 
 class Attribute a where
@@ -233,18 +233,39 @@ insertPet p roster = case roster of
 
 -- TODO update to account for healthRemaining
 -- such that it will get the first pet with healthRemaining > 0
--- probably leave this as 'generic' and add a 'specialized' version
--- just like 'keepAsking'
+-- getRosterFirst :: Roster -> Maybe Pet
+-- getRosterFirst roster = case roster of
+--   Roster (Just p) _ _ _ _ _ -> Just p
+--   Roster Nothing (Just p) _ _ _ _ -> Just p
+--   Roster Nothing Nothing (Just p) _ _ _ -> Just p
+--   Roster Nothing Nothing Nothing (Just p) _ _ -> Just p
+--   Roster Nothing Nothing Nothing Nothing (Just p) _ -> Just p
+--   Roster Nothing Nothing Nothing Nothing Nothing (Just p) -> Just p
+--   Roster Nothing Nothing Nothing Nothing Nothing Nothing -> Nothing
+
+
+
+
 getRosterFirst :: Roster -> Maybe Pet
-getRosterFirst roster = case roster of
-  Roster (Just p) _ _ _ _ _ -> Just p
+getRosterFirst roster = getRosterFirstWhere roster (const True)
+
+
+getRosterFirstWhere :: Roster -> (Health -> Bool) -> Maybe Pet
+getRosterFirstWhere roster cond = case roster of
+  Roster (Just p) _ _ _ _ _ -> if cond (petHealthRemaining p) then Just p else Nothing
   Roster Nothing (Just p) _ _ _ _ -> Just p
   Roster Nothing Nothing (Just p) _ _ _ -> Just p
   Roster Nothing Nothing Nothing (Just p) _ _ -> Just p
   Roster Nothing Nothing Nothing Nothing (Just p) _ -> Just p
   Roster Nothing Nothing Nothing Nothing Nothing (Just p) -> Just p
-  Roster Nothing Nothing Nothing Nothing Nothing Nothing -> Nothing -- says this line is redundant?
+  Roster Nothing Nothing Nothing Nothing Nothing Nothing -> Nothing
 
+
+healthPositive :: Health -> Bool
+healthPositive health = health > (Health 0)
+
+
+----
 
 
 replacePet :: Pet -> Pet -> Roster -> Roster
