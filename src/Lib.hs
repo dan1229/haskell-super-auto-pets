@@ -49,7 +49,6 @@ startBattle user = do
     putStrBar
     putStrLn "YOUR TEAM"
     putStrLn $ display (userRoster user)
-    -- putStrLn $ show (userRoster user)
     
     -- Create opponent team
     petOpponent1 <- getPet allPets
@@ -71,7 +70,7 @@ startBattle user = do
         , userItemList = itemListEmpty
         }
     putStrLn "\nOPPONENT TEAM"
-    putStrLn $ show (opponentRoster)
+    putStrLn $ display (opponentRoster)
 
     -- BATTLE
     battleRoster user userOpponent
@@ -160,9 +159,9 @@ betweenInclusive a b x = a <= x && x <= b
 --
 -- ATTRIBUTES
 --
-newtype Name = Name {getName::String} deriving (Show, IsString)
-newtype Attack = Attack {getAttack::Int} deriving Show
-newtype Health = Health {getHealth::Int} deriving Show
+newtype Name = Name {getName::String} deriving (IsString)
+newtype Attack = Attack {getAttack::Int} 
+newtype Health = Health {getHealth::Int} 
 newtype Cost = Cost {getCost::Int} deriving (Num, Ord, Eq)
 
 class Attribute a where
@@ -208,7 +207,7 @@ allPets =
   , mkPet "Fedly" (Attack 3) (Health 30) (Cost 5)
   , mkPet "Slosom" (Attack 900) (Health 95) (Cost 12)
   , mkPet "SandyMan" (Attack 10) (Health 100) (Cost 5)
-  , mkPet "Seth" (Attack 60 (Health 60) (Cost 6)
+  , mkPet "Seth" (Attack 60) (Health 60) (Cost 6)
   , mkPet "Pengy" (Attack 90) (Health 90) (Cost 5)
   , mkPet "Soupsir" (Attack 150) (Health 200) (Cost 9)
   , mkPet "Pengy's evil brother" (Attack 90) (Health 90) (Cost 5)
@@ -315,12 +314,18 @@ itemListEmpty = ItemList
 class Display a where
   display :: a -> String
 
+instance Display Attack where
+  display (Attack x) = show x
+
+instance Display Health where
+  display (Health x) = show x
+
 instance Display Cost where
   display (Cost x) = show x
 
 -- TODO update to use emoji
 instance Display Pet where
-  display (Pet name attack health healthRemaining cost) = getName name ++ " $" ++ display cost ++ " (A: " ++ show (getAttack attack) ++ ", H: " ++ show (getHealth healthRemaining) ++ "/" ++ show (getHealth health) ++ ")"
+  display (Pet name attack health healthRemaining cost) = getName name ++ " $" ++ display cost ++ " (A: " ++ display attack ++ ", H: " ++ display healthRemaining ++ "/" ++ display health ++ ")"
 
 instance Display Roster where
-  display (Roster rp1 rp2 rp3 rp4 rp5 rp6) = "ROSTER: " ++ (display fromJust rp1) ++ ", " 
+  display (Roster rp1 rp2 rp3 rp4 rp5 rp6) = "ROSTER: " ++ (display (fromJust rp1)) ++ ", " 
