@@ -102,8 +102,8 @@ battleRoster user1 user2 = do
   let r2' = replacePet user2Pet user2Pet' (userRoster user2)
   
   -- create updated users
-  let user1' = User {userName=(userName user1), userRoster=r1', userItemList=(userItemList user1)}
-  let user2' = User {userName=(userName user2), userRoster=r2', userItemList=(userItemList user2)}
+  let user1' = user1 { userRoster = r1' }
+  let user2' = user2 { userRoster = r2' }
 
   -- TODO detect if either player is out of pets
   battleRoster user1' user2'
