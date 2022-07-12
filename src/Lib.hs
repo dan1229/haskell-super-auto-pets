@@ -234,6 +234,7 @@ insertPet p roster = case roster of
 
 -- TODO update to account for healthRemaining
 -- such that it will get the first pet with healthRemaining > 0
+
 -- getRosterFirst :: Roster -> Maybe Pet
 -- getRosterFirst roster = case roster of
 --   Roster (Just p) _ _ _ _ _ -> Just p
@@ -245,34 +246,39 @@ insertPet p roster = case roster of
 --   Roster Nothing Nothing Nothing Nothing Nothing Nothing -> Nothing
 
 
+-- getRosterFirst :: Roster -> Maybe Pet
+-- getRosterFirst roster = getRosterFirstWhere roster (const True)
 
 
-getRosterFirst :: Roster -> Maybe Pet
-getRosterFirst roster = getRosterFirstWhere roster (const True)
+-- getRosterFirstWhere :: Roster -> (Health -> Bool) -> Maybe Pet
+-- getRosterFirstWhere roster cond = case roster of
+--   Roster (Just p) _ _ _ _ _ -> if cond (petHealthRemaining p) then Just p else Nothing  -- TODO what to return on ELSE
+--   Roster Nothing (Just p) _ _ _ _ -> Just p
+--   Roster Nothing Nothing (Just p) _ _ _ -> Just p
+--   Roster Nothing Nothing Nothing (Just p) _ _ -> Just p
+--   Roster Nothing Nothing Nothing Nothing (Just p) _ -> Just p
+--   Roster Nothing Nothing Nothing Nothing Nothing (Just p) -> Just p
+--   Roster Nothing Nothing Nothing Nothing Nothing Nothing -> Nothing
 
 
-getRosterFirstWhere :: Roster -> (Health -> Bool) -> Maybe Pet
-getRosterFirstWhere roster cond = case roster of
-  Roster (Just p) _ _ _ _ _ -> if cond (petHealthRemaining p) then Just p else Nothing
-  Roster Nothing (Just p) _ _ _ _ -> Just p
-  Roster Nothing Nothing (Just p) _ _ _ -> Just p
-  Roster Nothing Nothing Nothing (Just p) _ _ -> Just p
-  Roster Nothing Nothing Nothing Nothing (Just p) _ -> Just p
-  Roster Nothing Nothing Nothing Nothing Nothing (Just p) -> Just p
-  Roster Nothing Nothing Nothing Nothing Nothing Nothing -> Nothing
-
-
-healthPositive :: Health -> Bool
-healthPositive health = health > (Health 0)
+-- healthPositive :: Health -> Bool
+-- healthPositive health = health > (Health 0)
 
 
 ----
 
 
 replacePet :: Pet -> Pet -> Roster -> Roster
-replacePet petToRemove petToAdd roster = do
-  -- TODO
-  roster
+replacePet petToRemove petToAdd roster
+  | (Roster (Just p) _ _ _ _ _) && (Just p == petToRemove) >> roster { rosterPet1 = petToAdd }
+  | (Roster Nothing (Just p) _ _ _ _) && (Just p == petToRemove) >> roster { rosterPet2 = petToAdd }
+  | (Roster Nothing Nothing (Just p) _ _ _) && (Just p == petToRemove) >> roster { rosterPet3 = petToAdd }
+  | (Roster Nothing Nothing Nothing (Just p) _ _) && (Just p == petToRemove) >> roster { rosterPet4 = petToAdd }
+  | (Roster Nothing Nothing Nothing Nothing (Just p) _) && (Just p == petToRemove) >> roster { rosterPet5 = petToAdd }
+  | (Roster Nothing Nothing Nothing Nothing Nothing (Just p) && (Just p == petToRemove) >> roster { rosterPet6 = petToAdd }
+  | otherwise roster
+
+-- replacePet petToRemove petToAdd roster = map (\h -> if h == petToRemove then petToAdd else petToRemove)
 
 
 --
