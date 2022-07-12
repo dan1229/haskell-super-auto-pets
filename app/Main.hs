@@ -4,7 +4,7 @@ import Lib
 
 gameMenu :: User -> Int -> IO ()
 gameMenu user round = do
-    putStrBar
+    printBar
     putStrLn "Want to play?"
     putStrLn "1. Yes"
     putStrLn "2. No (exit)"
@@ -22,7 +22,7 @@ gameMenu user round = do
 -- MAIN
 --
 main = do
-    putStrBar
+    printBar
     putStrLn "What's your name?"
     username <- getLine
     let user = User { userName=username, userRoster=rosterEmpty, userItemList=itemListEmpty }

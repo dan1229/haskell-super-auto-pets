@@ -22,12 +22,12 @@ startRound user round = do
 startPetSelection :: User -> Cost -> IO ()
 startPetSelection user goldRemaining = do
     -- list out 3 random choices
-    putStrBar
+    printBar
     pet1 <- getPet allPets
     pet2 <- getPet allPets
     pet3 <- getPet allPets
     let petChoices = [pet1, pet2, pet3]
-    mapM_ (\(idx, choice) -> putStrLn $ show idx ++ ". " ++ display choice) (zip [1..] petChoices) 
+    printPetList petChoices
 
     -- deal with pet selection and gold
     putStrLn $ "\nYou have $" ++ display goldRemaining ++ " gold remaining."
@@ -46,7 +46,7 @@ startPetSelection user goldRemaining = do
 
 startBattle :: User -> IO ()
 startBattle user = do
-    putStrBar
+    printBar
     putStrLn "YOUR TEAM"
     putStrLn $ display (userRoster user)
     
@@ -131,11 +131,6 @@ displayPets p1 p2 = do
   putStrLn $ display p1
   putStrLn $ "vs."
   putStrLn $ display p2
-
-
-putStrBar :: IO ()
-putStrBar = do
-    putStrLn "\n==================="
 
 -- keep asking
 keepAskingWhere :: Read a => String -> (a -> Bool) -> IO a
@@ -350,3 +345,14 @@ instance Display Pet where
 
 instance Display Roster where
   display (Roster rp1 rp2 rp3 rp4 rp5 rp6) = "ROSTER: " ++ (display (fromJust rp1)) ++ ", " 
+
+
+
+-- PRINT
+printBar :: IO ()
+printBar = do
+    putStrLn "\n==================="
+
+printPetList :: [Pet] -> IO ()
+printPetList pets = do
+    mapM_ (\(idx, choice) -> putStrLn $ show idx ++ ". " ++ display choice) (zip [1..] pets) 
