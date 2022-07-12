@@ -186,7 +186,13 @@ data Pet = Pet
   }
 
 mkPet :: Name -> Attack -> Health -> Cost -> Pet
-mkPet name attack health cost = Pet {petName=name, petAttack=attack, petHealth=health, petHealthRemaining=health, petCost=cost}
+mkPet name attack health cost = Pet
+  { petName = name
+  , petAttack = attack
+  , petHealth = health
+  , petHealthRemaining = health
+  , petCost = cost
+  }
 
 
 
