@@ -24,7 +24,7 @@ startRound user round = do
 startPetSelection :: User -> Cost -> IO ()
 startPetSelection user goldRemaining = do
     -- list out 3 random choices
-    printBar
+    putStrLn "\n"
     pet1 <- getPet allPets
     pet2 <- getPet allPets
     pet3 <- getPet allPets
@@ -79,15 +79,13 @@ startBattle user = do
 
 battleRoster :: User -> User -> IO ()
 battleRoster user1 user2 = do
-  let r1pet = getRosterFirst (userRoster user1)
-  let r2pet = getRosterFirst (userRoster user2)
-
-  when (isNothing r1pet) (putStrLn "user1 LOSES")
-  when (isNothing r2pet) (putStrLn "user2 LOSES")
-
+  -- get pets
+  printBar
+  putStrLn "NEW CHALLENGER:"
+  let r1pet = getRosterFirstWhere (userRoster user1) healthPositive
+  let r2pet = getRosterFirstWhere (userRoster user2) healthPositive
   let user1Pet = fromJust r1pet
   let user2Pet = fromJust r2pet
-  putStrLn "\n"
   printPetBattle user1Pet user2Pet
 
   -- battle pets
@@ -95,21 +93,27 @@ battleRoster user1 user2 = do
   putStrLn "\nResult:"
   printPetBattle user1Pet' user2Pet'
 
-  -- create updated rosters  - include 'dead' pets in roster to retain full original roster
+  -- create updated rosters
   let r1' = replacePet user1Pet user1Pet' (userRoster user1)
   let r2' = replacePet user2Pet user2Pet' (userRoster user2)
   
   -- create updated users
   let user1' = user1 { userRoster = r1' }
   let user2' = user2 { userRoster = r2' }
-  putStrLn $ display (userRoster user1')
-  putStrLn $ display (userRoster user2')
   
   threadDelay 3000000 --sleep for a million microseconds, or one second
 
-  -- TODO detect if either player is out of pets
-  battleRoster user1' user2'
+  -- detect if either player is out of pets
+  -- TODO how to handle ties?
+  if (isRosterEmpty (userRoster user1')) == True
+    then putStrLn $ "\n**\n" ++ (userName user1') ++ " LOSES\n**"
+  else if (isRosterEmpty (userRoster user2')) == True
+    then putStrLn $ "\n**\n" ++ (userName user1') ++ " LOSES\n**"
+  else battleRoster user1' user2'
+  
 
+isRosterEmpty :: Roster -> Bool
+isRosterEmpty roster = if (isNothing (getRosterFirstWhere roster healthPositive)) then True else False
 
 
 battlePets :: Pet -> Pet -> (Pet, Pet) -- dont hate me
@@ -345,7 +349,7 @@ instance Display Cost where
 instance Display Pet where
   display (Pet id name emoji attack health healthRemaining cost) = getName name ++ " " ++ getEmoji emoji ++ " $" ++ display cost ++ " (A: " ++ display attack ++ ", H: " ++ display healthRemaining ++ "/" ++ display health ++ ")"
 
-instance Display Roster where -- how to handle 'nothing' here?
+instance Display Roster where -- TODO how to handle 'nothing' here?
   display (Roster rp1 rp2 rp3 rp4 rp5) = "ROSTER: " ++ (display (fromJust rp1)) ++ ", " ++ (display (fromJust rp2)) ++ ", " ++ (display (fromJust rp3)) ++ ", "
 
 
@@ -364,6 +368,4 @@ printPetList pets = do
 
 printPetBattle :: Pet -> Pet -> IO ()
 printPetBattle p1 p2 = do
-  putStrLn $ display p1
-  putStrLn $ "vs."
-  putStrLn $ display p2
+  putStrLn $ (display p1) ++ "vs. " ++ (display p2)
