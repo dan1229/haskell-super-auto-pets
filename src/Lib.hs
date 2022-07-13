@@ -62,7 +62,6 @@ startBattle user = do
         , rosterPet3 = Just petOpponent3
         , rosterPet4 = Nothing
         , rosterPet5 = Nothing
-        , rosterPet6 = Nothing
         }
     let
       userOpponent = User
@@ -226,12 +225,11 @@ getPet xs = do
 
 insertPet :: Pet -> Roster -> Roster
 insertPet p roster = case roster of
-  Roster Nothing _ _ _ _ _ -> roster{ rosterPet1=(Just p) }
-  Roster _ Nothing _ _ _ _ -> roster{ rosterPet2=(Just p) }
-  Roster _ _ Nothing _ _ _ -> roster{ rosterPet3=(Just p) }
-  Roster _ _ _ Nothing _ _ -> roster{ rosterPet4=(Just p) }
-  Roster _ _ _ _ Nothing _ -> roster{ rosterPet5=(Just p) }
-  Roster _ _ _ _ _ Nothing -> roster{ rosterPet6=(Just p) }
+  Roster Nothing _ _ _ _ -> roster{ rosterPet1=(Just p) }
+  Roster _ Nothing _ _ _ -> roster{ rosterPet2=(Just p) }
+  Roster _ _ Nothing _ _ -> roster{ rosterPet3=(Just p) }
+  Roster _ _ _ Nothing _ -> roster{ rosterPet4=(Just p) }
+  Roster _ _ _ _ Nothing -> roster{ rosterPet5=(Just p) }
   _ -> error "OH NO"
 
 
@@ -242,13 +240,12 @@ getRosterFirst roster = getRosterFirstWhere roster (const True)
 
 getRosterFirstWhere :: Roster -> (Pet -> Bool) -> Maybe Pet
 getRosterFirstWhere roster cond = case roster of
-  Roster (Just p) _ _ _ _ _ | cond p -> Just p
-  Roster _ (Just p) _ _ _ _ | cond p  -> Just p
-  Roster _ _ (Just p) _ _ _ | cond p  -> Just p
-  Roster _ _ _ (Just p) _ _ | cond p  -> Just p
-  Roster _ _ _ _ (Just p) _ | cond p  -> Just p
-  Roster _ _ _ _ _ (Just p) | cond p  -> Just p
-  Roster _ _ _ _ _ _ -> Nothing
+  Roster (Just p) _ _ _ _ | cond p -> Just p
+  Roster _ (Just p) _ _ _ | cond p  -> Just p
+  Roster _ _ (Just p) _ _ | cond p  -> Just p
+  Roster _ _ _ (Just p) _ | cond p  -> Just p
+  Roster _ _ _ _ (Just p) | cond p  -> Just p
+  Roster _ _ _ _ _ -> Nothing
 
 
 healthPositive :: Pet -> Bool
@@ -262,11 +259,9 @@ replacePet petToRemove petToAdd Roster {..} = Roster
   , rosterPet3 = doReplace rosterPet3
   , rosterPet4 = doReplace rosterPet4
   , rosterPet5 = doReplace rosterPet5
-  , rosterPet6 = doReplace rosterPet6
   }
   where
     doReplace mPet = if Just petToRemove == mPet then Just petToAdd else mPet
-  -- TODO remove 6th pets
 
 
 
@@ -288,7 +283,6 @@ data Roster = Roster
   , rosterPet3 :: Maybe Pet
   , rosterPet4 :: Maybe Pet
   , rosterPet5 :: Maybe Pet
-  , rosterPet6 :: Maybe Pet
   }
 
 
@@ -299,13 +293,13 @@ rosterEmpty = Roster
   , rosterPet3 = Nothing
   , rosterPet4 = Nothing
   , rosterPet5 = Nothing
-  , rosterPet6 = Nothing
   }
 
 
 --
 -- ITEM
 --
+
 data Item = Item
   { itemName :: Name
   }
@@ -345,7 +339,7 @@ instance Display Pet where
   display (Pet name attack health healthRemaining cost) = getName name ++ " $" ++ display cost ++ " (A: " ++ display attack ++ ", H: " ++ display healthRemaining ++ "/" ++ display health ++ ")"
 
 instance Display Roster where
-  display (Roster rp1 rp2 rp3 rp4 rp5 rp6) = "ROSTER: " ++ (display (fromJust rp1)) ++ ", " 
+  display (Roster rp1 rp2 rp3 rp4 rp5) = "ROSTER: " ++ (display (fromJust rp1)) ++ ", " 
 
 
 
