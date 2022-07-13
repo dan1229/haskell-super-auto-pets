@@ -101,9 +101,11 @@ battleRoster user1 user2 = do
   -- create updated users
   let user1' = user1 { userRoster = r1' }
   let user2' = user2 { userRoster = r2' }
+  putStrLn $ display (userRoster user1')
+  putStrLn $ display (userRoster user2')
 
   -- TODO detect if either player is out of pets
-  battleRoster user1' user2'
+  -- battleRoster user1' user2'
 
 
 
@@ -333,13 +335,14 @@ instance Display Cost where
   display (Cost x) = show x
 
 -- TODO update to use emoji
+-- how to make these look cleaner? i.e., multiline
 instance Display Pet where
   display (Pet id name attack health healthRemaining cost) = getName name ++ " $" ++ display cost ++ " (A: " ++ display attack ++ ", H: " ++ display healthRemaining ++ "/" ++ display health ++ ")"
 
-instance Display Roster where
-  display (Roster rp1 rp2 rp3 rp4 rp5) = "ROSTER: " ++ (display (fromJust rp1)) ++ ", " 
+instance Display Roster where -- how to handle 'nothing' here?
+  display (Roster rp1 rp2 rp3 rp4 rp5) = "ROSTER: " ++ (display (fromJust rp1)) ++ ", " ++ (display (fromJust rp2)) ++ ", " ++ (display (fromJust rp3)) ++ ", "
 
-
+  
 --
 -- PRINT
 --
