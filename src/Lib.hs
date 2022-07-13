@@ -87,15 +87,12 @@ battleRoster user1 user2 = do
   let user1Pet = fromJust r1pet
   let user2Pet = fromJust r2pet
   putStrLn "\n"
-  putStrLn $ userName user1 ++ ": " ++ display user1Pet
-  putStrLn $ "vs."
-  putStrLn $ userName user2 ++ ": " ++ display user2Pet
+  printPetBattle user1Pet user2Pet
 
   -- battle pets
   let (user1Pet', user2Pet') = battlePets user1Pet user2Pet
-
   putStrLn "\nResult:"
-  displayPets user1Pet' user2Pet'
+  printPetBattle user1Pet' user2Pet'
 
   -- create updated rosters  - include 'dead' pets in roster to retain full original roster
   let r1' = replacePet user1Pet user1Pet' (userRoster user1)
@@ -124,13 +121,6 @@ battlePets p1 p2 = do
   if ((getHealth (petHealthRemaining p1') < 0) || (getHealth (petHealthRemaining p2') < 0))
     then (p1', p2')  -- one or both pets are dead
     else battlePets p1' p2'  -- not dead battle again
-
--- print/display
-displayPets :: Pet -> Pet -> IO ()
-displayPets p1 p2 = do
-  putStrLn $ display p1
-  putStrLn $ "vs."
-  putStrLn $ display p2
 
 -- keep asking
 keepAskingWhere :: Read a => String -> (a -> Bool) -> IO a
@@ -222,7 +212,6 @@ getPet xs = do
 
 
 -- Helper functions
-
 insertPet :: Pet -> Roster -> Roster
 insertPet p roster = case roster of
   Roster Nothing _ _ _ _ -> roster{ rosterPet1=(Just p) }
@@ -231,7 +220,6 @@ insertPet p roster = case roster of
   Roster _ _ _ Nothing _ -> roster{ rosterPet4=(Just p) }
   Roster _ _ _ _ Nothing -> roster{ rosterPet5=(Just p) }
   _ -> error "OH NO"
-
 
 
 getRosterFirst :: Roster -> Maybe Pet
@@ -274,6 +262,7 @@ data User = User
   , userItemList :: ItemList
   }
 
+
 --
 -- ROSTER
 --
@@ -299,7 +288,6 @@ rosterEmpty = Roster
 --
 -- ITEM
 --
-
 data Item = Item
   { itemName :: Name
   }
@@ -321,7 +309,6 @@ itemListEmpty = ItemList
 --
 -- DISPLAY
 --
-
 class Display a where
   display :: a -> String
 
@@ -342,8 +329,9 @@ instance Display Roster where
   display (Roster rp1 rp2 rp3 rp4 rp5) = "ROSTER: " ++ (display (fromJust rp1)) ++ ", " 
 
 
-
+--
 -- PRINT
+--
 printBar :: IO ()
 printBar = do
     putStrLn "\n==================="
@@ -351,3 +339,11 @@ printBar = do
 printPetList :: [Pet] -> IO ()
 printPetList pets = do
     mapM_ (\(idx, choice) -> putStrLn $ show idx ++ ". " ++ display choice) (zip [1..] pets) 
+
+
+
+printPetBattle :: Pet -> Pet -> IO ()
+printPetBattle p1 p2 = do
+  putStrLn $ display p1
+  putStrLn $ "vs."
+  putStrLn $ display p2
