@@ -7,6 +7,7 @@ import System.IO (hFlush, stdout)
 import Text.Read (readMaybe)
 import Data.Maybe (fromMaybe, fromJust, isNothing)
 import Control.Monad (when)
+import Control.Concurrent (threadDelay)
 
 goldInitial :: Cost
 goldInitial = Cost 15
@@ -103,9 +104,11 @@ battleRoster user1 user2 = do
   let user2' = user2 { userRoster = r2' }
   putStrLn $ display (userRoster user1')
   putStrLn $ display (userRoster user2')
+  
+  threadDelay 3000000 --sleep for a million microseconds, or one second
 
   -- TODO detect if either player is out of pets
-  -- battleRoster user1' user2'
+  battleRoster user1' user2'
 
 
 
