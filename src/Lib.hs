@@ -144,6 +144,7 @@ betweenInclusive a b x = a <= x && x <= b
 --
 -- ATTRIBUTES
 --
+newtype Id = Id {getId::Int} deriving (Num, Ord, Eq)
 newtype Name = Name {getName::String} deriving (IsString, Eq)
 newtype Attack = Attack {getAttack::Int} deriving (Num, Ord, Eq)
 newtype Health = Health {getHealth::Int} deriving (Num, Ord, Eq)
@@ -151,6 +152,9 @@ newtype Cost = Cost {getCost::Int} deriving (Num, Ord, Eq)
 
 class Attribute a where
   valid :: a -> Bool
+
+instance Attribute Id where
+  valid (Id x) = x > 0
 
 instance Attribute Name where
   valid (Name x) = x /= ""
@@ -164,20 +168,28 @@ instance Attribute Health where
 instance Attribute Cost where
   valid (Cost x) = x >= 0
 
+
 --
 -- PETS
 --
 data Pet = Pet
-  { petName :: Name
+  { petId :: Id
+  , petName :: Name
   , petAttack :: Attack
   , petHealth :: Health
   , petHealthRemaining :: Health
   , petCost :: Cost
-  } deriving Eq
+  }
 
-mkPet :: Name -> Attack -> Health -> Cost -> Pet
-mkPet name attack health cost = Pet
-  { petName = name
+
+instance Eq Pet where
+   (Pet id name attack healthRemaining health cost) == (Pet id' name' attack' healthRemaining' health' cost') = id == id'
+
+
+mkPet :: Name -> Id -> Attack -> Health -> Cost -> Pet
+mkPet name id attack health cost = Pet
+  { petId = id
+  , petName = name
   , petAttack = attack
   , petHealth = health
   , petHealthRemaining = health
@@ -185,23 +197,22 @@ mkPet name attack health cost = Pet
   }
 
 
-
 allPets :: [Pet]
 allPets =
-  [ mkPet "Ralfy" (Attack 10) (Health 30) (Cost 5)
-  , mkPet "Teddy" (Attack 10)(Health 35) (Cost 5)
-  , mkPet "Fredd" (Attack 7) (Health 20) (Cost 5)
-  , mkPet "Neddd" (Attack 30) (Health 5) (Cost 5)
-  , mkPet "Edddy" (Attack 10) (Health 100) (Cost 5)
-  , mkPet "Kevly" (Attack 20) (Health 25) (Cost 5)
-  , mkPet "Renly" (Attack 10) (Health 15) (Cost 5)
-  , mkPet "Fedly" (Attack 3) (Health 30) (Cost 5)
-  , mkPet "Slosom" (Attack 900) (Health 95) (Cost 12)
-  , mkPet "SandyMan" (Attack 10) (Health 100) (Cost 5)
-  , mkPet "Seth" (Attack 60) (Health 60) (Cost 6)
-  , mkPet "Pengy" (Attack 90) (Health 90) (Cost 5)
-  , mkPet "Soupsir" (Attack 150) (Health 200) (Cost 9)
-  , mkPet "Pengy's evil brother" (Attack 90) (Health 90) (Cost 5)
+  [ mkPet "Ralfy" (Id 1) (Attack 10) (Health 30) (Cost 5)
+  , mkPet "Teddy" (Id 2) (Attack 10)(Health 35) (Cost 5)
+  , mkPet "Fredd" (Id 3) (Attack 7) (Health 20) (Cost 5)
+  , mkPet "Neddd" (Id 4) (Attack 30) (Health 5) (Cost 5)
+  , mkPet "Edddy" (Id 5) (Attack 10) (Health 100) (Cost 5)
+  , mkPet "Kevly" (Id 6) (Attack 20) (Health 25) (Cost 5)
+  , mkPet "Renly" (Id 7) (Attack 10) (Health 15) (Cost 5)
+  , mkPet "Fedly" (Id 8) (Attack 3) (Health 30) (Cost 5)
+  , mkPet "Slosom" (Id 9) (Attack 900) (Health 95) (Cost 12)
+  , mkPet "SandyMan" (Id 10) (Attack 10) (Health 100) (Cost 5)
+  , mkPet "Seth" (Id 11) (Attack 60) (Health 60) (Cost 6)
+  , mkPet "Soupsir" (Id 12) (Attack 150) (Health 200) (Cost 9)
+  , mkPet "Pengy" (Id 13) (Attack 90) (Health 90) (Cost 5)
+  , mkPet "Pengy's evil brother" (Id 14) (Attack 90) (Health 90) (Cost 5)
   ]
 
 
@@ -323,7 +334,7 @@ instance Display Cost where
 
 -- TODO update to use emoji
 instance Display Pet where
-  display (Pet name attack health healthRemaining cost) = getName name ++ " $" ++ display cost ++ " (A: " ++ display attack ++ ", H: " ++ display healthRemaining ++ "/" ++ display health ++ ")"
+  display (Pet id name attack health healthRemaining cost) = getName name ++ " $" ++ display cost ++ " (A: " ++ display attack ++ ", H: " ++ display healthRemaining ++ "/" ++ display health ++ ")"
 
 instance Display Roster where
   display (Roster rp1 rp2 rp3 rp4 rp5) = "ROSTER: " ++ (display (fromJust rp1)) ++ ", " 
