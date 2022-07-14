@@ -5,7 +5,8 @@ import Data.String (IsString)
 
 import System.IO (hFlush, stdout)
 import Text.Read (readMaybe)
-import Data.Maybe (fromMaybe, fromJust, isNothing)
+import Data.Maybe (fromMaybe, fromJust, isNothing, catMaybes)
+import Data.List (intercalate)
 import Control.Monad (when)
 import Control.Concurrent (threadDelay)
 
@@ -101,10 +102,9 @@ battleRoster user1 user2 = do
   let user1' = user1 { userRoster = r1' }
   let user2' = user2 { userRoster = r2' }
   
-  threadDelay 3000000 --sleep for a million microseconds, or one second
+  threadDelay 3000000 --sleep for a million microseconds, or three seconds
 
   -- detect if either player is out of pets
-  -- TODO how to handle ties?
   let user1Res = isRosterEmpty (userRoster user1')
   let user2Res = isRosterEmpty (userRoster user2')
   if user1Res == True && user2Res == True
@@ -115,7 +115,8 @@ battleRoster user1 user2 = do
     then putStrLn $ "\n**\n" ++ (userName user2') ++ " LOSES\n**"
   else battleRoster user1' user2'
 
-
+-- TODO add data type for (Pet, Pet)
+-- remove recursion
 battlePets :: Pet -> Pet -> (Pet, Pet) -- dont hate me
 battlePets p1 p2 = do
   -- ATTACK
@@ -130,6 +131,7 @@ battlePets p1 p2 = do
   if getHealth (petHealthRemaining p1') < 0 || getHealth (petHealthRemaining p2') < 0
     then (p1', p2')  -- one or both pets are dead
     else battlePets p1' p2'  -- not dead battle again
+
 
 -- keep asking
 keepAskingWhere :: Read a => String -> (a -> Bool) -> IO a
@@ -360,14 +362,20 @@ instance Display Health where
 instance Display Cost where
   display (Cost x) = show x
 
--- TODO update to use emoji
--- how to make these look cleaner? i.e., multiline
 instance Display Pet where
   display (Pet id name emoji attack health healthRemaining cost) = getName name ++ " " ++ getEmoji emoji ++ " $" ++ display cost ++ " (A: " ++ display attack ++ ", H: " ++ display healthRemaining ++ "/" ++ display health ++ ")"
+  
+instance Display Roster where
+  display roster = "ROSTER: " ++ intercalate ", " (map display (rosterToList roster))
 
-instance Display Roster where -- TODO how to handle 'nothing' here?
-  display (Roster rp1 rp2 rp3 rp4 rp5) = "ROSTER: " ++ display (fromJust rp1) ++ ", " ++ display (fromJust rp2) ++ ", " ++ display (fromJust rp3) ++ ", "
-
+rosterToList :: Roster -> [Pet]
+rosterToList Roster{..} = catMaybes
+  [ rosterPet1
+  , rosterPet2
+  , rosterPet3
+  , rosterPet4
+  , rosterPet5
+  ]
 
 --
 -- PRINT
@@ -376,10 +384,10 @@ printBar :: IO ()
 printBar = do
     putStrLn "\n==================="
 
+
 printPetList :: [Pet] -> IO ()
 printPetList pets = do
     mapM_ (\(idx, choice) -> putStrLn $ show idx ++ ". " ++ display choice) (zip [1..] pets) 
-
 
 
 printPetBattle :: Pet -> Pet -> IO ()
