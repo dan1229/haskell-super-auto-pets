@@ -258,7 +258,7 @@ insertPet p roster = case roster of
 
 
 isRosterEmpty :: Roster -> Bool
-isRosterEmpty roster = isNothing (getRosterFirstWhere roster healthPositive))
+isRosterEmpty roster = isNothing (getRosterFirstWhere roster healthPositive)
 
 
 getRosterFirst :: Roster -> Maybe Pet
