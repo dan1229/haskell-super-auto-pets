@@ -127,7 +127,7 @@ battlePets p1 p2 = do
   let p2' = p2 { petHealthRemaining = (Health p2HealthRemaining) }
   
   -- check results
-  if ((getHealth (petHealthRemaining p1') < 0) || (getHealth (petHealthRemaining p2') < 0))
+  if getHealth (petHealthRemaining p1') < 0 || getHealth (petHealthRemaining p2') < 0
     then (p1', p2')  -- one or both pets are dead
     else battlePets p1' p2'  -- not dead battle again
 
@@ -206,7 +206,7 @@ data Pet = Pet
 
 
 instance Eq Pet where
-   (Pet id name emoji attack healthRemaining health cost) == (Pet id' name' emoji' attack' healthRemaining' health' cost') = id == id'
+   p1 == p2 = petId p1 == petId p2
 
 
 mkPet :: Name -> Id -> Emoji -> Attack -> Health -> Cost -> Pet
@@ -366,7 +366,7 @@ instance Display Pet where
   display (Pet id name emoji attack health healthRemaining cost) = getName name ++ " " ++ getEmoji emoji ++ " $" ++ display cost ++ " (A: " ++ display attack ++ ", H: " ++ display healthRemaining ++ "/" ++ display health ++ ")"
 
 instance Display Roster where -- TODO how to handle 'nothing' here?
-  display (Roster rp1 rp2 rp3 rp4 rp5) = "ROSTER: " ++ (display (fromJust rp1)) ++ ", " ++ (display (fromJust rp2)) ++ ", " ++ (display (fromJust rp3)) ++ ", "
+  display (Roster rp1 rp2 rp3 rp4 rp5) = "ROSTER: " ++ display (fromJust rp1) ++ ", " ++ display (fromJust rp2) ++ ", " ++ display (fromJust rp3) ++ ", "
 
 
 --
@@ -384,4 +384,4 @@ printPetList pets = do
 
 printPetBattle :: Pet -> Pet -> IO ()
 printPetBattle p1 p2 = do
-  putStrLn $ (display p1) ++ "vs. " ++ (display p2)
+  putStrLn $ display p1 ++ "vs. " ++ display p2
