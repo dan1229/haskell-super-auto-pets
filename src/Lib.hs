@@ -105,15 +105,15 @@ battleRoster user1 user2 = do
 
   -- detect if either player is out of pets
   -- TODO how to handle ties?
-  if (isRosterEmpty (userRoster user1')) == True
+  let user1Res = isRosterEmpty (userRoster user1')
+  let user2Res = isRosterEmpty (userRoster user2')
+  if user1Res == True && user2Res == True
+    then putStrLn $ "\n**\nIT'S A TIE!!!\n**"
+  else if user1Res == True
     then putStrLn $ "\n**\n" ++ (userName user1') ++ " LOSES\n**"
-  else if (isRosterEmpty (userRoster user2')) == True
-    then putStrLn $ "\n**\n" ++ (userName user1') ++ " LOSES\n**"
+  else if user2Res == True
+    then putStrLn $ "\n**\n" ++ (userName user2') ++ " LOSES\n**"
   else battleRoster user1' user2'
-  
-
-isRosterEmpty :: Roster -> Bool
-isRosterEmpty roster = if (isNothing (getRosterFirstWhere roster healthPositive)) then True else False
 
 
 battlePets :: Pet -> Pet -> (Pet, Pet) -- dont hate me
@@ -153,12 +153,24 @@ betweenInclusive a b x = a <= x && x <= b
 --
 -- ATTRIBUTES
 --
-newtype Id = Id {getId::Int} deriving (Num, Ord, Eq)
-newtype Name = Name {getName::String} deriving (IsString, Eq)
-newtype Emoji = Emoji {getEmoji::String} deriving (IsString, Eq)
-newtype Attack = Attack {getAttack::Int} deriving (Num, Ord, Eq)
-newtype Health = Health {getHealth::Int} deriving (Num, Ord, Eq)
-newtype Cost = Cost {getCost::Int} deriving (Num, Ord, Eq)
+newtype Id = Id { getId::Int }
+  deriving (Num, Ord, Eq)
+
+newtype Name = Name { getName::String }
+  deriving (IsString, Eq)
+
+newtype Emoji = Emoji { getEmoji::String }
+  deriving (IsString, Eq)
+
+newtype Attack = Attack { getAttack::Int }
+  deriving (Num, Ord, Eq)
+
+newtype Health = Health { getHealth::Int }
+  deriving (Num, Ord, Eq)
+
+newtype Cost = Cost { getCost::Int }
+  deriving (Num, Ord, Eq)
+
 
 class Attribute a where
   valid :: a -> Bool
@@ -198,8 +210,8 @@ instance Eq Pet where
 
 
 mkPet :: Name -> Id -> Emoji -> Attack -> Health -> Cost -> Pet
-mkPet name id emoji attack health cost = Pet
-  { petId = id
+mkPet name pid emoji attack health cost = Pet
+  { petId = pid
   , petName = name
   , petEmoji = emoji
   , petAttack = attack
@@ -237,12 +249,16 @@ getPet xs = do
 -- Helper functions
 insertPet :: Pet -> Roster -> Roster
 insertPet p roster = case roster of
-  Roster Nothing _ _ _ _ -> roster{ rosterPet1=(Just p) }
-  Roster _ Nothing _ _ _ -> roster{ rosterPet2=(Just p) }
-  Roster _ _ Nothing _ _ -> roster{ rosterPet3=(Just p) }
-  Roster _ _ _ Nothing _ -> roster{ rosterPet4=(Just p) }
-  Roster _ _ _ _ Nothing -> roster{ rosterPet5=(Just p) }
+  Roster Nothing _ _ _ _ -> roster{ rosterPet1 = Just p }
+  Roster _ Nothing _ _ _ -> roster{ rosterPet2 = Just p }
+  Roster _ _ Nothing _ _ -> roster{ rosterPet3 = Just p }
+  Roster _ _ _ Nothing _ -> roster{ rosterPet4 = Just p }
+  Roster _ _ _ _ Nothing -> roster{ rosterPet5 = Just p }
   _ -> error "OH NO"
+
+
+isRosterEmpty :: Roster -> Bool
+isRosterEmpty roster = isNothing (getRosterFirstWhere roster healthPositive))
 
 
 getRosterFirst :: Roster -> Maybe Pet
