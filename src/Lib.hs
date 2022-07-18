@@ -1,4 +1,5 @@
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE RecordWildCards, DerivingStrategies #-}
+
 module Lib where
 import System.Random (randomRIO)
 import Data.String (IsString)
@@ -258,6 +259,18 @@ insertPet p roster = case roster of
   Roster _ _ _ _ Nothing -> roster{ rosterPet5 = Just p }
   _ -> error "OH NO"
 
+modifyPetAt :: Int -> (Maybe Pet -> Maybe Pet) -> Roster -> Roster
+modifyPetAt n f r@Roster{..} = case n of
+  1 -> r { rosterPet1 = f rosterPet1 }
+  2 -> r { rosterPet2 = f rosterPet2 }
+  3 -> r { rosterPet3 = f rosterPet3 }
+  4 -> r { rosterPet4 = f rosterPet4 }
+  5 -> r { rosterPet5 = f rosterPet5 }
+  _ -> error $ "Unknown roster index, tried to modify pet at " <> show n
+
+insertPetAt :: Int -> Pet -> Roster -> Roster
+insertPetAt n p = modifyPetAt n (const (Just p))
+
 
 isRosterEmpty :: Roster -> Bool
 isRosterEmpty roster = isNothing (getRosterFirstWhere roster healthPositive)
@@ -326,6 +339,23 @@ rosterEmpty = Roster
   }
 
 
+rosterToList :: Roster -> [Pet]
+rosterToList Roster {..} = catMaybes [rosterPet1, rosterPet2, rosterPet3, rosterPet4, rosterPet5]
+
+listToRoster :: [Pet] -> Roster
+listToRoster pets = go 1 pets rosterEmpty
+  where
+    go _ [] r = r
+    go n (x:xs) r = go (n + 1) xs (insertPetAt n x r)
+
+
+--
+-- RESULT
+--
+
+data Result = Win | Lose | Tie
+  deriving Show
+
 --
 -- ITEM
 --
@@ -368,14 +398,7 @@ instance Display Pet where
 instance Display Roster where
   display roster = "ROSTER: " ++ intercalate ", " (map display (rosterToList roster))
 
-rosterToList :: Roster -> [Pet]
-rosterToList Roster{..} = catMaybes
-  [ rosterPet1
-  , rosterPet2
-  , rosterPet3
-  , rosterPet4
-  , rosterPet5
-  ]
+
 
 --
 -- PRINT
