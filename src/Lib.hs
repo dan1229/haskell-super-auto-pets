@@ -108,6 +108,7 @@ battleRoster user1 user2 = do
   -- detect if either player is out of pets
   let user1Res = isRosterEmpty (userRoster user1')
   let user2Res = isRosterEmpty (userRoster user2')
+  printBar
   if user1Res == True && user2Res == True
     then putStrLn $ "\n**\nIT'S A TIE!!!\n**"
   else if user1Res == True
@@ -133,6 +134,26 @@ battlePets p1 p2 = do
     then (p1', p2')  -- one or both pets are dead
     else battlePets p1' p2'  -- not dead battle again
 
+
+-- TODO build something more recursive like this
+-- utilitze 'Result' object
+--
+-- battlePets :: Pet -> Pet -> (Pet, Pet)
+-- battlePets p1 p2 = (update p1 p2, update p2 p1)
+--   where
+--     update defender attacker = defender { pHealth = pHealth defender - pAttack attacker }
+
+-- battleRoster :: Roster -> Roster -> Result
+-- battleRoster r1 r2 = go (rosterToList r1) (rosterToList r2)
+--   where
+--     go [] [] = Tie
+--     go [] _ = Lose
+--     go _ [] = Win
+--     go (x:xs) (y:ys) =
+--       let (x', y') = battlePets x y
+--        in go (update x' xs) (update y' ys)
+--     update x xs = if pHealth x > 0 then x:xs else xs
+    
 
 -- keep asking
 keepAskingWhere :: Read a => String -> (a -> Bool) -> IO a
@@ -348,13 +369,6 @@ listToRoster pets = go 1 pets rosterEmpty
     go _ [] r = r
     go n (x:xs) r = go (n + 1) xs (insertPetAt n x r)
 
-
---
--- RESULT
---
-
-data Result = Win | Lose | Tie
-  deriving Show
 
 --
 -- ITEM
