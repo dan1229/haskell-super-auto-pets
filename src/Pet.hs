@@ -1,5 +1,7 @@
 module Pet where
-
+import Attributes
+import Roster
+import Print
 
 --
 -- PETS
