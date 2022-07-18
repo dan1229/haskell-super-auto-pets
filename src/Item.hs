@@ -1,4 +1,5 @@
 module Item where
+import Attributes
 
 --
 -- ITEM

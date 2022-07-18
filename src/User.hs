@@ -1,6 +1,8 @@
 
 module User where
 
+import Item
+import Roster
 
 --
 -- USER

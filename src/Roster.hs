@@ -1,5 +1,8 @@
 module Roster where
 
+import Pet
+import Data.Maybe (fromMaybe, fromJust, isNothing, catMaybes)
+import Data.List (intercalate)
 
 --
 -- ROSTER

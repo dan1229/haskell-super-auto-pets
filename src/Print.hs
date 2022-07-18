@@ -1,5 +1,6 @@
 module Print where
 
+import Pet
 
 --
 -- PRINT
