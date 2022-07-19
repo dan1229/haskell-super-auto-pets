@@ -5,22 +5,22 @@ module Attributes where
 --
 -- ATTRIBUTES
 --
-newtype Id = Id { getId::Int }
+newtype Id = Id { getId: : Int }
   deriving (Num, Ord, Eq)
 
-newtype Name = Name { getName::String }
+newtype Name = Name { getName :: String }
   deriving (IsString, Eq)
 
-newtype Emoji = Emoji { getEmoji::String }
+newtype Emoji = Emoji { getEmoji :: String }
   deriving (IsString, Eq)
 
-newtype Attack = Attack { getAttack::Int }
+newtype Attack = Attack { getAttack :: Int }
   deriving (Num, Ord, Eq)
 
-newtype Health = Health { getHealth::Int }
+newtype Health = Health { getHealth :: Int }
   deriving (Num, Ord, Eq)
 
-newtype Cost = Cost { getCost::Int }
+newtype Cost = Cost { getCost :: Int }
   deriving (Num, Ord, Eq)
 
 
