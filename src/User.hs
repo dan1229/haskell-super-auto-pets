@@ -2,7 +2,7 @@
 module User where
 
 import Item
-import Roster
+import Pet
 
 --
 -- USER

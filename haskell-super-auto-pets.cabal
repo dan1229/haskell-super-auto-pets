@@ -29,8 +29,6 @@ library
       Item
       Lib
       Pet
-      Print
-      Roster
       User
   other-modules:
       Paths_haskell_super_auto_pets

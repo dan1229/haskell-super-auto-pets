@@ -1,11 +1,13 @@
 module Attributes where
 
+import Data.String (IsString)
 
 
 --
 -- ATTRIBUTES
 --
-newtype Id = Id { getId: : Int }
+
+newtype Id = Id { getId :: Int }
   deriving (Num, Ord, Eq)
 
 newtype Name = Name { getName :: String }
@@ -26,6 +28,7 @@ newtype Cost = Cost { getCost :: Int }
 
 class Attribute a where
   valid :: a -> Bool
+
 
 --
 -- VALID
