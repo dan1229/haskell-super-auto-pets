@@ -1,7 +1,6 @@
 {-# LANGUAGE RecordWildCards, DerivingStrategies #-}
 
 module Lib where
-import System.Random (randomRIO)
 import Data.String (IsString)
 
 import System.IO (hFlush, stdout)
@@ -14,8 +13,6 @@ import Control.Concurrent (threadDelay)
 import Attributes
 import Item
 import Pet
-import Print
-import Roster
 import User
 
 goldInitial :: Cost
@@ -182,3 +179,13 @@ betweenInclusive a b x = a <= x && x <= b
 
 
 
+--
+-- PRINT
+--
+printBar :: IO ()
+printBar = do
+    putStrLn "\n==================="
+
+printPetBattle :: Pet -> Pet -> IO ()
+printPetBattle p1 p2 = do
+  putStrLn $ display p1 ++ "vs. " ++ display p2
