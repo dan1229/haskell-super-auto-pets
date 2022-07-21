@@ -25,7 +25,11 @@ source-repository head
 
 library
   exposed-modules:
+      Attributes
+      Item
       Lib
+      Pet
+      User
   other-modules:
       Paths_haskell_super_auto_pets
   hs-source-dirs:

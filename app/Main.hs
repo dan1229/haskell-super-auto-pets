@@ -1,6 +1,9 @@
 module Main where
 
 import Lib
+import User
+import Pet
+import Item
 
 gameMenu :: User -> Int -> IO ()
 gameMenu user round = do
