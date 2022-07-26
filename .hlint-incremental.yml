@@ -1,0 +1,93 @@
+### Config used for CI's "HLint Incremental Pass".
+##
+#
+# These hints are checked only on files that differ from `master`.
+# This way, we can bring legacy code up to current standards incrementally,
+# while still ensuring that new code conforms to standards as it's introduced.
+
+### Adding a Rule
+##
+#
+# The first step to adding a rule is getting buy-in. First, post in
+# #engineering-workflow-changes to get feedback. If there's buy-in for the
+# change, then we can include it in this file.
+#
+# A rule in this file will impact other developers, so we want to be careful
+# that the rules are *very* easy to follow. Rules should have the following properties:
+#
+# 1. Mention briefly a quick alternative to the problematic code.
+# 2. Potentially point to documentation or a resource on fixing the issue, if
+#    it's more complex than can easily fit in the rule message.
+# 3. Mention a responsible person for incrementally moving the codebase over
+#    who can help with more complex tasks.
+#
+# This way, an engineer can easily know that they can get support with these
+# incremental changes. After all, we're distributing work for a refactor across
+# multiple engineers and requesting their assistance - it should be as easy as
+# possible to do that.
+
+### Adding Exceptions
+##
+#
+# Perhaps you're working on a super large file and you have an urgent PR. This
+# hlint pass complains about something that's not related to what you're
+# working on. You can add an exception in the `within` array of modules. The
+# responsible party will, in part, be looking at these `within` exceptions to
+# determine further work on the refactor.
+#
+# Please leave a comment explaining why the module is exempted from the rule.
+# If it's because you don't have time/energy to do the refactor, that's fine -
+# just note that so we don't consider it a "real" exemption.
+
+- ignore: { } # Disables all built-in hints.
+
+- error: {name: Avoid restricted function}
+# - error: {name: Avoid restricted module}
+
+- functions:
+  # # Example of restricted function
+  # - name: launchMissiles
+  #   within: [Application] # module whitelist (where hint will not apply)
+  #   message: 'All missile launching is to be done in the Application module only, please.'
+
+  - name: subSelectUnsafe
+    within: []
+    message: 'Accepting a `Maybe` from your query, failing on `Nothing` Haskell-side, will allow you to give a better error message.'
+
+  # Output should either go to a logger, or (in the case of tests) an assertion.
+  - name: print
+    within: []
+    message: &avoid-stdout-use-logger  |
+      Avoid using functions like `print` and `putStrLn` directly, instead preferring to
+      use a logger, like `Mercury.Log`.
+
+      If this appears in a test, consider writing an assertion instead. `YT.assertEq`
+      will print out the two values if they don't match, and more detailed assertions
+      can print out better messages.
+
+      Otherwise, use one of the `trace` functions (e.g. `trace`, `traceId`, `traceShow`, `traceM`, etc...).
+      The warnings they issue will remind you to remove them later.
+
+      For assistance, contact @dustin on Slack.
+  - name: putStrLn
+    within:
+      # Application is a legacy exception and also shouldn't be printing to stdout in most cases
+      - Application
+      # Ghci is for providing REPL utilities, so printing makes sense here.
+      - Ghci
+      # TestImport.Utils.Debug contains debugging utils. CI prevents use in `master`.
+      - TestImport.Utils.Debug
+      - Mercury.Firco.Task.PullSampleFuf
+    message: *avoid-stdout-use-logger
+  - name: Yesod.Test.printBody
+    within:
+      # TODO: investigate
+      - Handler.Admin.Onboarding.CreateRequestSpec
+    message: *avoid-stdout-use-logger
+
+- modules:
+  - name: [ClassyPrelude]
+    within:
+      - A.MercuryPrelude
+    message: "Instead of ClassyPrelude, please import A.MercuryPrelude for a
+    default prelude. Contact @Matt Parsons on slack for questions"
