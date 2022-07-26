@@ -17,8 +17,6 @@ cabal.project
 snapshots
 golden/**/actual
 test-failures.txt
-stack.yaml
-stack.yaml.lock
 .ghcid
 .hspec-failures
 
