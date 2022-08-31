@@ -42,9 +42,11 @@ library
       TypeApplications
   build-depends:
       base >=4.7 && <5
+    , monad-logger
     , persistent
     , persistent-postgresql
     , random
+    , resource-pool
     , yesod
   default-language: Haskell2010
 
@@ -63,9 +65,11 @@ executable haskell-super-auto-pets-exe
   build-depends:
       base >=4.7 && <5
     , haskell-super-auto-pets
+    , monad-logger
     , persistent
     , persistent-postgresql
     , random
+    , resource-pool
     , yesod
   default-language: Haskell2010
 
@@ -85,8 +89,10 @@ test-suite haskell-super-auto-pets-test
   build-depends:
       base >=4.7 && <5
     , haskell-super-auto-pets
+    , monad-logger
     , persistent
     , persistent-postgresql
     , random
+    , resource-pool
     , yesod
   default-language: Haskell2010
