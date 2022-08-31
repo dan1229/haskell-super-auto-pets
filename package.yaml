@@ -24,6 +24,13 @@ default-extensions:
 - GeneralizedNewtypeDeriving
 - TypeFamilies
 - TypeApplications
+- GADTs
+- DerivingStrategies
+- StandaloneDeriving
+- UndecidableInstances
+- DataKinds
+- FlexibleInstances
+- MultiParamTypeClasses
 
 dependencies:
 - base >= 4.7 && < 5
@@ -33,6 +40,7 @@ dependencies:
 - persistent-postgresql
 - resource-pool
 - monad-logger
+- text
 
 library:
   source-dirs: src
