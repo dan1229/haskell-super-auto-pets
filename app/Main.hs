@@ -6,7 +6,7 @@ import Pet
 import Item
 
 gameMenu :: User -> Int -> IO ()
-gameMenu user round = do
+gameMenu user roundNum = do
     printBar
     putStrLn "Want to play?"
     putStrLn "1. Yes"
@@ -17,13 +17,14 @@ gameMenu user round = do
 
     if choice == 1
         then do
-            startRound user round
-            gameMenu user (round + 1)
+            startRound user roundNum
+            gameMenu user (roundNum + 1)
     else putStrLn "Thanks for playing!"
             
 --
 -- MAIN
 --
+main :: IO ()
 main = do
     printBar
     putStrLn "What's your name?"
