@@ -24,8 +24,9 @@ User
 |]
 
 connStr :: ConnectionString
-connStr = "host=localhost dbname=test user=test password=test port=5432"
+connStr = "host=localhost dbname=super-auto-pets"
 
 main :: IO ()
 main = runStderrLoggingT $ withPostgresqlPool connStr 10 $ \pool -> liftIO $ do
-    warp 3000 $ App pool
+    runSqlPool (runMigration migrateAll) pool
+    warp 4000 $ App pool
