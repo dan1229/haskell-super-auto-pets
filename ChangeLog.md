@@ -2,4 +2,6 @@
 
 ## Unreleased changes
 
-TODO
+### register a user
+- add some handlers
+    - TODO

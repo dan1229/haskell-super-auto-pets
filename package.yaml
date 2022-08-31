@@ -22,10 +22,25 @@ description:         Please see the README on GitHub at <https://github.com/dan1
 default-extensions:
 - OverloadedStrings
 - GeneralizedNewtypeDeriving
+- TypeFamilies
+- TypeApplications
+- GADTs
+- DerivingStrategies
+- StandaloneDeriving
+- UndecidableInstances
+- DataKinds
+- FlexibleInstances
+- MultiParamTypeClasses
 
 dependencies:
 - base >= 4.7 && < 5
 - random
+- yesod
+- persistent
+- persistent-postgresql
+- resource-pool
+- monad-logger
+- text
 
 library:
   source-dirs: src

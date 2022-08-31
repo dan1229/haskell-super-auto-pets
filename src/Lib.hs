@@ -1,13 +1,10 @@
 {-# LANGUAGE RecordWildCards, DerivingStrategies #-}
 
 module Lib where
-import Data.String (IsString)
 
 import System.IO (hFlush, stdout)
 import Text.Read (readMaybe)
-import Data.Maybe (fromMaybe, fromJust, isNothing, catMaybes)
-import Data.List (intercalate)
-import Control.Monad (when)
+import Data.Maybe (fromJust)
 import Control.Concurrent (threadDelay)
 
 import Attributes
@@ -22,8 +19,8 @@ goldInitial = Cost 15
 -- GAME FLOW
 --
 startRound :: User -> Int -> IO ()
-startRound user round = do
-    putStrLn $ "Round " ++ show round ++ " starting..."
+startRound user roundNum = do
+    putStrLn $ "Round " ++ show roundNum ++ " starting..."
     startPetSelection user goldInitial
 
 

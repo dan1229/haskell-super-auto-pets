@@ -1,34 +1,32 @@
+{-# LANGUAGE QuasiQuotes           #-}
+{-# LANGUAGE TemplateHaskell       #-}
+{-# OPTIONS_GHC -Wno-name-shadowing #-}
+
 module Main where
 
-import Lib
-import User
-import Pet
-import Item
+import Application
+import Yesod
+import Control.Monad.Logger (runStderrLoggingT)
+import Database.Persist.Postgresql 
+import Data.Text
 
-gameMenu :: User -> Int -> IO ()
-gameMenu user round = do
-    printBar
-    putStrLn "Want to play?"
-    putStrLn "1. Yes"
-    putStrLn "2. No (exit)"
-    choice <- keepAskingWhere ">> " (betweenInclusive 1 2)
+newtype Name = Name { name :: Text } deriving newtype (Show, PersistField, PersistFieldSql)
+newtype Email = Email { email :: Text } deriving newtype (Show, PersistField, PersistFieldSql)
+newtype Password = Password { password :: Text } deriving newtype (Show, PersistField, PersistFieldSql)
 
-    -- TODO add team name?
+share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
+User
+    name Name
+    email Email
+    UniqueEmail email
+    hashedPassword Password
+    deriving Show
+|]
 
-    if choice == 1
-        then do
-            startRound user round
-            gameMenu user (round + 1)
-    else putStrLn "Thanks for playing!"
-            
---
--- MAIN
---
-main = do
-    printBar
-    putStrLn "What's your name?"
-    username <- getLine
-    let user = User { userName=username, userRoster=rosterEmpty, userItemList=itemListEmpty }
+connStr :: ConnectionString
+connStr = "host=localhost dbname=super-auto-pets"
 
-    putStrLn $ "\nWelcome " ++ (userName user) ++ "!"
-    gameMenu user 1
+main :: IO ()
+main = runStderrLoggingT $ withPostgresqlPool connStr 10 $ \pool -> liftIO $ do
+    runSqlPool (runMigration migrateAll) pool
+    warp 4000 $ App pool

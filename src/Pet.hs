@@ -4,7 +4,7 @@ module Pet where
 import Attributes
 import System.Random (randomRIO)
 
-import Data.Maybe (fromMaybe, fromJust, isNothing, catMaybes)
+import Data.Maybe (isNothing, catMaybes)
 import Data.List (intercalate)
 
 --
@@ -58,13 +58,13 @@ allPets =
 
 
 instance Display Pet where
-  display (Pet id name emoji attack health healthRemaining cost) = getName name ++ " " ++ getEmoji emoji ++ " $" ++ display cost ++ " (A: " ++ display attack ++ ", H: " ++ display healthRemaining ++ "/" ++ display health ++ ")"
+  display (Pet _ name emoji attack health healthRemaining cost) = getName name ++ " " ++ getEmoji emoji ++ " $" ++ display cost ++ " (A: " ++ display attack ++ ", H: " ++ display healthRemaining ++ "/" ++ display health ++ ")"
 
 
 
 printPetList :: [Pet] -> IO ()
 printPetList pets = do
-    mapM_ (\(idx, choice) -> putStrLn $ show idx ++ ". " ++ display choice) (zip [1..] pets) 
+    mapM_ (\(idx, choice) -> putStrLn $ show idx ++ ". " ++ display choice) (zip @Int [1..] pets) 
 
 
 
